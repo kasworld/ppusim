@@ -1,1 +1,9 @@
 pub mod ppusim;
+pub mod rgba;
+pub mod palette;
+pub mod render_dst;
+pub mod tile_vec;
+pub mod tilemap_buffer;
+pub mod tilemap;
+pub mod tilemap_vec;
+pub mod ppu;
