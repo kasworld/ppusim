@@ -7,6 +7,6 @@ pub struct TileMapVec(Vec<tilemap::TileMap>);
 
 impl TileMapVec {
     pub fn new() -> Self {
-        Self(vec![tilemap::TileMap::new(); TILE_MAP_VEC_SIZE])
+        Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
 }

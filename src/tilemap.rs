@@ -1,4 +1,4 @@
-use crate::{palette, render_dst, tilemap_buffer};
+use crate::{palette, render_dst, tile_vec, tilemap_buffer};
 
 // sprite or background plane
 #[derive(Clone, Copy, Debug)]
@@ -14,7 +14,7 @@ pub struct TileMap {
 }
 
 impl TileMap {
-    pub fn new() -> Self {
+    pub fn new_empty() -> Self {
         Self {
             pos: (0, 0),
             wh: (1, 1),
@@ -30,8 +30,12 @@ impl TileMap {
         self,
         mut dst: &render_dst::RenderDst,
         tilemapbuffer: tilemap_buffer::TileMapBuffer,
-        palete: palette::Palette,
+        tilevec: tile_vec::TileVec,
+        pal: palette::Palette,
     ) -> &render_dst::RenderDst {
+        let lower_palette = pal.get_lower(self.upper_palette_index);
+        let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
+        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index, self.wh.0, self.wh.1);
         dst
     }
 }

@@ -11,7 +11,7 @@ pub struct PPU {
 impl PPU {
     pub fn new() -> Self {
         Self {
-            palette: palette::Palette::new(),
+            palette: palette::Palette::new_empty(),
             tile_def: tile_vec::TileVec::new(),
             tile_map_def: tilemap_vec::TileMapVec::new(),
             tile_map_buffer: tilemap_buffer::TileMapBuffer::new(),
