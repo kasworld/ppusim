@@ -1,6 +1,5 @@
 use crate::tilemap;
 
-
 pub const TILE_MAP_VEC_SIZE: usize = 4096;
 
 #[derive(Debug)]

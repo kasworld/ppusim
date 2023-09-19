@@ -1,4 +1,4 @@
-use crate::{palette, tilemap_buffer, render_dst};
+use crate::{palette, render_dst, tilemap_buffer};
 
 // sprite or background plane
 #[derive(Clone, Copy, Debug)]
