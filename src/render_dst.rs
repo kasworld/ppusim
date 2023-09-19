@@ -7,7 +7,7 @@ pub struct RenderDst {
 }
 
 impl RenderDst {
-    pub fn new(w: usize, h: usize) -> Self {
+    pub fn new_empty(w: usize, h: usize) -> Self {
         Self {
             w,
             h,
