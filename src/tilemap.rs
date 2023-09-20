@@ -43,28 +43,30 @@ impl TileMap {
 
         rtn
     }
+
+    // render_width render_height can negative if out of screen
     pub fn calc_render_vars(
         self,
         dstw: usize,
         dsth: usize,
-    ) -> (usize, usize, usize, usize, usize, usize) {
+    ) -> (usize, usize, usize, usize, isize, isize) {
         let (render_start_x, tile_start_x) = if self.pos.0 < 0 {
-            (0 as usize, -self.pos.0 as usize)
+            (0 as usize, (-self.pos.0) as usize)
         } else {
             (self.pos.0 as usize, 0 as usize)
         };
         let (render_start_y, tile_start_y) = if self.pos.1 < 0 {
-            (0 as usize, -self.pos.1 as usize)
+            (0 as usize, (-self.pos.1) as usize)
         } else {
             (self.pos.1 as usize, 0 as usize)
         };
         let render_width = min(
-            self.wh.0 as usize * tile::TILE_WIDTH - tile_start_x,
-            dstw - render_start_x,
+            self.wh.0 as isize * tile::TILE_WIDTH as isize - tile_start_x as isize,
+            dstw as isize - render_start_x as isize,
         );
         let render_height = min(
-            self.wh.1 as usize * tile::TILE_HEIGHT - tile_start_y,
-            dsth - render_start_y,
+            self.wh.1 as isize * tile::TILE_HEIGHT as isize - tile_start_y as isize,
+            dsth as isize - render_start_y as isize,
         );
         return (
             render_start_x,
@@ -82,13 +84,6 @@ impl TileMap {
         tilevec: &'a tile_vec::TileVec,
         pal: &'a palette::Palette,
     ) -> &'a mut render_dst::RenderDst {
-        let lower_palette = pal.get_lower(self.upper_palette_index);
-        let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
-        let tlmap_w = self.wh.0 as usize;
-        let tlmap_h = self.wh.1 as usize;
-        let tilemapbuff =
-            tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
-
         let (
             render_start_x,
             render_start_y,
@@ -97,13 +92,24 @@ impl TileMap {
             render_width,
             render_height,
         ) = self.calc_render_vars(dst.w, dst.h);
+        if !self.enable || render_width <= 0 || render_height <= 0 {
+            // out of screen 
+            return dst;
+        }
 
-        for y in 0..render_height {
+        let lower_palette = pal.get_lower(self.upper_palette_index);
+        let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
+        let tlmap_w = self.wh.0 as usize;
+        let tlmap_h = self.wh.1 as usize;
+        let tilemapbuff =
+            tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
+
+        for y in 0..render_height as usize {
             let tly = (tile_start_y + y) / tile::TILE_HEIGHT;
             let tly_d = (tile_start_y + y) % tile::TILE_HEIGHT;
             let rnd_y = render_start_y + y;
 
-            for x in 0..render_width {
+            for x in 0..render_width as usize {
                 let tlx = (tile_start_x + x) / tile::TILE_WIDTH;
                 let tlx_d = (tile_start_x + x) % tile::TILE_WIDTH;
                 let rnd_x = render_start_x + x;
@@ -118,7 +124,7 @@ impl TileMap {
     }
 }
 
-pub fn min(v1 :usize, v2 :usize) -> usize{
+pub fn min(v1: isize, v2: isize) -> isize {
     if v1 < v2 {
         v1
     } else {
