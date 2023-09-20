@@ -9,6 +9,14 @@ impl TileMapVec {
     pub fn new_empty() -> Self {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
+    pub fn new_random() -> Self {
+        let mut rtn = Self::new_empty();
+        for i in 0..TILE_MAP_VEC_SIZE {
+            rtn.0[i] = tilemap::TileMap::new_random();
+        }
+        rtn
+    }
+
     pub fn render<'a>(
         &self,
         mut dst: &'a mut render_dst::RenderDst,

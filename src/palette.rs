@@ -1,4 +1,4 @@
-use crate::{rgba::RGBA, tile};
+use crate::{rgba::RGBA};
 use rand::Rng;
 
 pub const UPPER_PALETTE_SIZE: usize = 256;

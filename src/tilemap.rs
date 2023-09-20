@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::cmp;
 
 use crate::{palette, render_dst, tile, tile_vec, tilemap_buffer};
@@ -27,6 +28,19 @@ impl TileMap {
             tilemap_buffer_index: 0,
             enable: false,
         }
+    }
+    pub fn new_random() -> Self {
+        let mut rng = rand::thread_rng();
+        let mut rtn = Self::new_empty();
+        rtn.enable = true;
+        rtn.pos = (rng.gen::<i16>(), rng.gen::<i16>());
+        rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
+        rtn.upper_palette_index = rng.gen::<u8>();
+        rtn.upper_tilevec_index = rng.gen::<u8>();
+        rtn.tilemap_buffer_index =
+            rng.gen_range(0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.wh.0 as usize * rtn.wh.1 as usize) as u32;
+
+        rtn
     }
     pub fn calc_render_vars(
         self,
