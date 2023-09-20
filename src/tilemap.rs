@@ -1,4 +1,4 @@
-use crate::{palette, render_dst, tile_vec, tilemap_buffer};
+use crate::{palette, render_dst, tile, tile_vec, tilemap_buffer};
 
 // sprite or background plane
 #[derive(Clone, Copy, Debug)]
@@ -35,7 +35,18 @@ impl TileMap {
     ) -> &render_dst::RenderDst {
         let lower_palette = pal.get_lower(self.upper_palette_index);
         let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
-        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index, self.wh.0, self.wh.1);
+
+        let tmw = self.wh.0 as usize;
+        let tmh = self.wh.1 as usize;
+        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tmw, tmh);
+
+        for tmy in 0..tmh {
+            for tmx in 0..tmw {
+                let lower_tl_index = tilemapbuff[tmy * tmw + tmx] as usize;
+                let tl = lower_tilevec[lower_tl_index];
+                let rgbatile = tile::palette2rgba(tl, lower_palette);
+            }
+        }
         dst
     }
 }

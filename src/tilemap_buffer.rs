@@ -10,9 +10,12 @@ impl TileMapBuffer {
     pub fn new() -> Self {
         Self(vec![0; TILE_MAP_BUFFER_SIZE])
     }
-    pub fn get_buffer<'a>(&'a self, tilemap_buffer_index: u32, w: u8, h: u8) -> &'a [TileVecIndex] {
-        let start = tilemap_buffer_index as usize;
-        let len = w as usize * h as usize;
-        &self.0[start..start + len]
+    pub fn get_buffer<'a>(
+        &'a self,
+        start: usize,
+        w: usize,
+        h: usize,
+    ) -> &'a [TileVecIndex] {
+        &self.0[start..start + w * h]
     }
 }

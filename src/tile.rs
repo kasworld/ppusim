@@ -20,8 +20,8 @@ pub fn palette2rgba_at(tl: Tile, pal: &[rgba::RGBA] , x :usize, y:usize) ->rgba:
 
 pub fn palette2rgba(tl: Tile, pal: &[rgba::RGBA]) -> [[rgba::RGBA; TILE_WIDTH]; TILE_HEIGHT] {
     let mut rtn = [[0; TILE_WIDTH]; TILE_HEIGHT];
-    for x in 0..TILE_HEIGHT {
-        for y in 0..TILE_WIDTH {
+    for x in 0..TILE_WIDTH {
+        for y in 0..TILE_HEIGHT {
             let i = tl[x][y] as usize;
             rtn[x][y] = pal[i];
         }
