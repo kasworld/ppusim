@@ -50,12 +50,12 @@ impl TileMap {
         dsth: usize,
     ) -> (usize, usize, usize, usize, isize, isize) {
         let (render_start_x, tile_start_x) = if self.pos.0 < 0 {
-            (0 as usize, (-self.pos.0) as usize)
+            (0 as usize, -(self.pos.0 as isize) as usize)
         } else {
             (self.pos.0 as usize, 0 as usize)
         };
         let (render_start_y, tile_start_y) = if self.pos.1 < 0 {
-            (0 as usize, (-self.pos.1) as usize)
+            (0 as usize, -(self.pos.1 as isize) as usize)
         } else {
             (self.pos.1 as usize, 0 as usize)
         };

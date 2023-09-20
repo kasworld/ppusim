@@ -7,8 +7,9 @@ fn main() {
     let tile_map_buffer = tilemap_buffer::TileMapBuffer::new_random();
     let mut rnd_dst = &mut RenderDst::new_empty(1920, 1080);
     rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
-    print!(
-        "{:?} {:?} {:?} {:?} {:?}",
-        rnd_dst, tile_map_def, tile_map_buffer, tile_def, palette
-    );
+    print!("{:?}", rnd_dst,);
+    // print!(
+    //     "{:?} {:?} {:?} {:?} {:?}",
+    //     rnd_dst, tile_map_def, tile_map_buffer, tile_def, palette
+    // );
 }
