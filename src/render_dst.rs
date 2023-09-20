@@ -1,5 +1,6 @@
 use crate::rgba::RGBA;
 
+#[derive(Debug)]
 pub struct RenderDst {
     pub w: usize,
     pub h: usize,
