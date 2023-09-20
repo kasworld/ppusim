@@ -17,6 +17,8 @@ fn main() {
 
     rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
 
+    _ = rnd_dst;
+    
     println!("render {:?}", Instant::now() - begin);
 
     //print!("{:?}", rnd_dst,);

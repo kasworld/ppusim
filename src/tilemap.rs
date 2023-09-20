@@ -32,8 +32,10 @@ impl TileMap {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
         rtn.enable = true;
-        rtn.pos = (rng.gen::<i16>(), rng.gen::<i16>());
-        rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
+        rtn.pos = (0,0);
+        rtn.wh = (240,135);
+        // rtn.pos = (rng.gen::<i16>(), rng.gen::<i16>());
+        // rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
         rtn.tilemap_buffer_index = rng.gen_range(

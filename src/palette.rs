@@ -3,7 +3,6 @@ use rand::Rng;
 use std::{
     fs::File,
     io::{Read, Write},
-    mem, slice,
 };
 
 pub const UPPER_PALETTE_SIZE: usize = 256;
