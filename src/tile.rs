@@ -13,7 +13,7 @@ pub fn new_empty() -> Tile {
     [[0; TILE_WIDTH]; TILE_HEIGHT]
 }
 
-pub fn palette2rgba_at(tl: Tile, pal: &[rgba::RGBA] , x :usize, y:usize) ->rgba::RGBA{
+pub fn palette2rgba_at(tl: Tile, pal: &[rgba::RGBA], x: usize, y: usize) -> rgba::RGBA {
     let i = tl[x][y] as usize;
     pal[i]
 }
