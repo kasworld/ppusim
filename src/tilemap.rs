@@ -54,18 +54,18 @@ impl TileMap {
             render_height,
         );
     }
-    pub fn render(
+    pub fn render<'a>(
         self,
-        mut dst: render_dst::RenderDst,
-        tilemapbuffer: tilemap_buffer::TileMapBuffer,
-        tilevec: tile_vec::TileVec,
-        pal: palette::Palette,
-    ) -> render_dst::RenderDst {
+        dst: &'a mut render_dst::RenderDst,
+        tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
+        tilevec: &'a tile_vec::TileVec,
+        pal: &'a palette::Palette,
+    ) -> &'a mut render_dst::RenderDst {
         let lower_palette = pal.get_lower(self.upper_palette_index);
         let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
-        let tmw = self.wh.0 as usize;
-        let tmh = self.wh.1 as usize;
-        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tmw, tmh);
+        let tlmap_w = self.wh.0 as usize;
+        let tlmap_h = self.wh.1 as usize;
+        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
 
         let (
             render_start_x,
@@ -86,10 +86,10 @@ impl TileMap {
                 let tlx_d = (tile_start_x + x) % tile::TILE_WIDTH;
                 let rnd_x = render_start_x + x;
 
-                let lower_tl_index = tilemapbuff[tly * tmw + tlx] as usize;
+                let lower_tl_index = tilemapbuff[tly * tlmap_w + tlx] as usize;
                 let tl = lower_tilevec[lower_tl_index];
 
-                dst.buffer[dst.w * rnd_y + rnd_x] = lower_palette[tl[tlx][tly] as usize];
+                dst.buffer[dst.w * rnd_y + rnd_x] = lower_palette[tl[tlx_d][tly_d] as usize];
             }
         }
         dst
