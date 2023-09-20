@@ -6,7 +6,7 @@ pub const TILE_MAP_VEC_SIZE: usize = 4096;
 pub struct TileMapVec(Vec<tilemap::TileMap>);
 
 impl TileMapVec {
-    pub fn new() -> Self {
+    pub fn new_empty() -> Self {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
     pub fn render<'a>(

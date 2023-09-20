@@ -65,7 +65,8 @@ impl TileMap {
         let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
         let tlmap_w = self.wh.0 as usize;
         let tlmap_h = self.wh.1 as usize;
-        let tilemapbuff = tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
+        let tilemapbuff =
+            tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
 
         let (
             render_start_x,

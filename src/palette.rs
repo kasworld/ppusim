@@ -16,7 +16,7 @@ impl Palette {
     }
     pub fn new_random() -> Self {
         let mut rng = rand::thread_rng();
-        let mut rtn  = Self::new_empty();
+        let mut rtn = Self::new_empty();
         for i in 0..PALETTE_SIZE {
             rtn.0[i] = rng.gen::<u32>();
         }
