@@ -1,4 +1,4 @@
-use crate::rgba;
+use rand::Rng;
 
 // hold lower palette index
 pub type PaletteIndex = u8;
@@ -13,17 +13,12 @@ pub fn new_empty() -> Tile {
     [[0; TILE_WIDTH]; TILE_HEIGHT]
 }
 
-pub fn palette2rgba_at(tl: Tile, pal: &[rgba::RGBA], x: usize, y: usize) -> rgba::RGBA {
-    let i = tl[x][y] as usize;
-    pal[i]
-}
-
-pub fn palette2rgba(tl: Tile, pal: &[rgba::RGBA]) -> [[rgba::RGBA; TILE_WIDTH]; TILE_HEIGHT] {
-    let mut rtn = [[0; TILE_WIDTH]; TILE_HEIGHT];
+pub fn new_random() -> Tile {
+    let mut rtn = new_empty();
+    let mut rng = rand::thread_rng();
     for x in 0..TILE_WIDTH {
         for y in 0..TILE_HEIGHT {
-            let i = tl[x][y] as usize;
-            rtn[x][y] = pal[i];
+            rtn[x][y] = rng.gen::<PaletteIndex>();
         }
     }
     rtn
