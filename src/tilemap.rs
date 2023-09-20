@@ -33,7 +33,9 @@ impl TileMap {
         let mut rtn = Self::new_empty();
         rtn.enable = true;
         rtn.pos = (0,0);
-        rtn.wh = (240,135);
+        rtn.wh = (240,135); // 1920x1080
+        // rtn.pos = (rng.gen_range(-256..640), rng.gen_range(-256..480) );
+        // rtn.wh = (rng.gen_range(0..80), rng.gen_range(0..60) );
         // rtn.pos = (rng.gen::<i16>(), rng.gen::<i16>());
         // rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
         rtn.upper_palette_index = rng.gen::<u8>();
