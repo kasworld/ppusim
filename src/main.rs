@@ -2,14 +2,18 @@ use std::time::Instant;
 
 use ppusim::{palette, render_dst::RenderDst, tile_vec, tilemap_buffer, tilemap_vec};
 
+const DSTW :usize = 2047;
+const DSTH :usize = 2047;
+
+
 fn main() {
     let begin = Instant::now();
 
     let palette = palette::Palette::new_random();
     let tile_def = tile_vec::TileVec::new_random();
-    let tile_map_def = tilemap_vec::TileMapVec::new_random();
+    let tile_map_def = tilemap_vec::TileMapVec::new_random(DSTW,DSTH);
     let tile_map_buffer = tilemap_buffer::TileMapBuffer::new_random();
-    let mut rnd_dst = &mut RenderDst::new_empty(1920, 1080);
+    let mut rnd_dst = &mut RenderDst::new_empty(DSTW, DSTH);
 
         
     println!("init {:?}", Instant::now() - begin);

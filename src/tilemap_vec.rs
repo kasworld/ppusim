@@ -9,10 +9,10 @@ impl TileMapVec {
     pub fn new_empty() -> Self {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
-    pub fn new_random() -> Self {
+    pub fn new_random(dst_w :usize, dst_h :usize) -> Self {
         let mut rtn = Self::new_empty();
         for i in 0..TILE_MAP_VEC_SIZE {
-            rtn.0[i] = tilemap::TileMap::new_random();
+            rtn.0[i] = tilemap::TileMap::new_random(dst_w,dst_h);
         }
         rtn
     }

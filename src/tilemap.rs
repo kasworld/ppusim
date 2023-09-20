@@ -28,16 +28,14 @@ impl TileMap {
             enable: false,
         }
     }
-    pub fn new_random() -> Self {
+    pub fn new_random(dst_w: usize, dst_h: usize) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
         rtn.enable = true;
-        rtn.pos = (0, 0);
-        rtn.wh = (240, 135); // 1920x1080
-                             // rtn.pos = (rng.gen_range(-256..640), rng.gen_range(-256..480) );
-                             // rtn.wh = (rng.gen_range(0..80), rng.gen_range(0..60) );
-                             // rtn.pos = (rng.gen::<i16>(), rng.gen::<i16>());
-                             // rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
+        let tw = (dst_w / tile::TILE_WIDTH) as u8;
+        let th = (dst_h / tile::TILE_HEIGHT) as u8;
+        rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
+        rtn.pos = (rng.gen_range(-(dst_w as i16)..dst_w as i16), rng.gen_range(-(dst_h as i16)..dst_h as i16));
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
         rtn.tilemap_buffer_index = rng.gen_range(
