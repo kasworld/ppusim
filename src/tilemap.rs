@@ -1,5 +1,4 @@
 use rand::Rng;
-use std::cmp;
 
 use crate::{palette, render_dst, tile, tile_vec, tilemap_buffer};
 
@@ -93,7 +92,7 @@ impl TileMap {
             render_height,
         ) = self.calc_render_vars(dst.w, dst.h);
         if !self.enable || render_width <= 0 || render_height <= 0 {
-            // out of screen 
+            // out of screen
             return dst;
         }
 
