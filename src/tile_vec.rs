@@ -1,5 +1,4 @@
 use crate::tile;
-use rand::Rng;
 
 pub const UPPER_TILE_VEC_SIZE: usize = 256;
 
@@ -16,14 +15,8 @@ impl TileVec {
     }
     pub fn new_random() -> Self {
         let mut rtn = Self::new_empty();
-        let mut rng = rand::thread_rng();
-
         for i in 0..TILE_VEC_SIZE {
-            for x in 0..tile::TILE_WIDTH {
-                for y in 0..tile::TILE_HEIGHT {
-                    rtn.0[i][x][y] = rng.gen::<tile::PaletteIndex>();
-                }
-            }
+            rtn.0[i] = tile::new_random();
         }
         rtn
     }
