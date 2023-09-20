@@ -1,4 +1,4 @@
-use crate::{palette, tilemap_buffer, tile_vec,tilemap_vec};
+use crate::{palette, tile_vec, tilemap_buffer, tilemap_vec};
 
 #[derive(Debug)]
 pub struct PPU {

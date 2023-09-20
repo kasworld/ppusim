@@ -88,8 +88,8 @@ impl TileMap {
 
                 let lower_tl_index = tilemapbuff[tly * tmw + tlx] as usize;
                 let tl = lower_tilevec[lower_tl_index];
-                
-                dst.buffer[dst.w*rnd_y+rnd_x] = lower_palette[ tl[tlx][tly] as usize ];
+
+                dst.buffer[dst.w * rnd_y + rnd_x] = lower_palette[tl[tlx][tly] as usize];
             }
         }
         dst
