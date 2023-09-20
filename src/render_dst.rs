@@ -11,7 +11,7 @@ impl RenderDst {
         Self {
             w,
             h,
-            buffer: vec![RGBA::new(0, 0, 0, 0); w * h],
+            buffer: vec![0; w * h],
         }
     }
 }

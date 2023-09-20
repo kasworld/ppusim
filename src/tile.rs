@@ -1,4 +1,3 @@
-use crate::palette;
 use crate::rgba;
 
 // hold lower palette index
@@ -20,7 +19,7 @@ pub fn palette2rgba_at(tl: Tile, pal: &[rgba::RGBA] , x :usize, y:usize) ->rgba:
 }
 
 pub fn palette2rgba(tl: Tile, pal: &[rgba::RGBA]) -> [[rgba::RGBA; TILE_WIDTH]; TILE_HEIGHT] {
-    let mut rtn = [[rgba::RGBA::new_empty(); TILE_WIDTH]; TILE_HEIGHT];
+    let mut rtn = [[0; TILE_WIDTH]; TILE_HEIGHT];
     for x in 0..TILE_HEIGHT {
         for y in 0..TILE_WIDTH {
             let i = tl[x][y] as usize;
