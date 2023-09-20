@@ -37,8 +37,9 @@ impl TileMap {
         rtn.wh = (rng.gen::<u8>(), rng.gen::<u8>());
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
-        rtn.tilemap_buffer_index =
-            rng.gen_range(0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.wh.0 as usize * rtn.wh.1 as usize) as u32;
+        rtn.tilemap_buffer_index = rng.gen_range(
+            0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.wh.0 as usize * rtn.wh.1 as usize,
+        ) as u32;
 
         rtn
     }
@@ -57,8 +58,14 @@ impl TileMap {
         } else {
             (self.pos.1 as usize, 0 as usize)
         };
-        let render_width = cmp::min(self.wh.0 as usize - tile_start_x, dstw - render_start_x);
-        let render_height = cmp::min(self.wh.1 as usize - tile_start_y, dsth - render_start_y);
+        let render_width = min(
+            self.wh.0 as usize * tile::TILE_WIDTH - tile_start_x,
+            dstw - render_start_x,
+        );
+        let render_height = min(
+            self.wh.1 as usize * tile::TILE_HEIGHT - tile_start_y,
+            dsth - render_start_y,
+        );
         return (
             render_start_x,
             render_start_y,
@@ -108,5 +115,13 @@ impl TileMap {
             }
         }
         dst
+    }
+}
+
+pub fn min(v1 :usize, v2 :usize) -> usize{
+    if v1 < v2 {
+        v1
+    } else {
+        v2
     }
 }
