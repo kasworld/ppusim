@@ -50,7 +50,17 @@ impl TileMap {
 
         rtn
     }
-
+    pub fn calc_render_count(self, dstw: usize, dsth: usize) -> usize {
+        if !self.enable {
+            return 0;
+        }
+        let (_, _, _, _, render_width, render_height) = self.calc_render_vars(dstw, dsth);
+        if render_width <= 0 || render_height <= 0 {
+            // out of screen
+            return 0;
+        }
+        render_width as usize * render_height as usize
+    }
     // render_width render_height can negative if out of screen
     pub fn calc_render_vars(
         self,
@@ -91,6 +101,9 @@ impl TileMap {
         tilevec: &'a tile_vec::TileVec,
         pal: &'a palette::Palette,
     ) -> &'a mut render_dst::RenderDst {
+        if !self.enable {
+            return dst;
+        }
         let (
             render_start_x,
             render_start_y,
@@ -99,7 +112,7 @@ impl TileMap {
             render_width,
             render_height,
         ) = self.calc_render_vars(dst.w, dst.h);
-        if !self.enable || render_width <= 0 || render_height <= 0 {
+        if render_width <= 0 || render_height <= 0 {
             // out of screen
             return dst;
         }

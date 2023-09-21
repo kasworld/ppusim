@@ -16,7 +16,13 @@ impl TileMapVec {
         }
         rtn
     }
-
+    pub fn calc_render_count(self, dstw: usize, dsth: usize) -> usize{
+        let mut sum = 0;
+        for tm in &self.0 {
+            sum += tm.calc_render_count(dstw, dsth);
+        }
+        sum
+    }
     pub fn render<'a>(
         &self,
         mut dst: &'a mut render_dst::RenderDst,

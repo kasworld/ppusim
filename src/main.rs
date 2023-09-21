@@ -16,14 +16,16 @@ fn main() {
     let mut rnd_dst = &mut RenderDst::new_empty(DSTW, DSTH);
 
         
-    println!("init {:?}", Instant::now() - begin);
+    println!("init {} sec", begin.elapsed().as_secs_f64() );
     let begin = Instant::now();
 
     rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
 
     _ = rnd_dst;
     
-    println!("render {:?}", Instant::now() - begin);
+    println!("render {} sec", begin.elapsed().as_secs_f64());
+    let total_render = tile_map_def.calc_render_count(rnd_dst.w, rnd_dst.h);
+    println!("total render {}", total_render);
 
     //print!("{:?}", rnd_dst,);
     // print!(
