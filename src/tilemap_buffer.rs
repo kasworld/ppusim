@@ -17,6 +17,7 @@ impl TileMapBuffer {
     pub fn new_empty() -> Self {
         Self(vec![0; TILE_MAP_BUFFER_SIZE])
     }
+    
     pub fn new_random() -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();

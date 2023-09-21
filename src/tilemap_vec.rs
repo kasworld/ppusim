@@ -16,10 +16,11 @@ impl TileMapVec {
         let mut rtn = Self::new_empty();
         for i in 0..TILE_MAP_VEC_SIZE {
             rtn.0[i] = tilemap::TileMap::new_random2(offset, dst_w, dst_h);
-            offset += rtn.0[i].calc_area(); 
+            offset += rtn.0[i].calc_area();
         }
         rtn
     }
+
     pub fn render<'a>(
         &self,
         dst: &'a mut RgbaImage,

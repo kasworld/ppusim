@@ -23,6 +23,7 @@ impl TileVec {
         }
         rtn
     }
+    
     pub fn get_at(&self, hi: u8, index: usize) -> tile::Tile {
         self.0[hi as usize * LOWER_TILE_VEC_SIZE + index]
     }

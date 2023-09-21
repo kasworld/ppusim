@@ -17,6 +17,7 @@ impl Palette {
     pub fn new_empty() -> Self {
         Self(vec![rgba::new_zero(); PALETTE_SIZE])
     }
+
     pub fn new_random() -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
@@ -30,6 +31,7 @@ impl Palette {
         }
         rtn
     }
+
     pub fn new_rainbow() -> Self {
         let mut rtn = Self::new_empty();
         for i in 0..PALETTE_SIZE {
@@ -42,6 +44,7 @@ impl Palette {
         }
         rtn
     }
+
     // file must bmp RGBA color
     // size LOWER_PALETTE_SIZE UPPER_PALETTE_SIZE
     pub fn load_from_file(filename: String) -> Self {
@@ -72,6 +75,7 @@ impl Palette {
         }
         rtn
     }
+
     pub fn save_to_file(&self, filename: String) {
         let mut img = RgbaImage::new(LOWER_PALETTE_SIZE as u32, UPPER_PALETTE_SIZE as u32);
         for y in 0..UPPER_PALETTE_SIZE {
@@ -81,6 +85,7 @@ impl Palette {
         }
         img.save(filename).unwrap();
     }
+    
     pub fn get_at(&self, hi: u8, index: usize) -> RGBA {
         self.0[hi as usize * LOWER_PALETTE_SIZE + index]
     }

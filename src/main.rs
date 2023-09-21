@@ -26,7 +26,10 @@ fn make_frame(
     tile_map_def: &TileMapVec,
     tile_map_buffer: &TileMapBuffer,
 ) {
+    let begin = Instant::now();
     let mut rnd_dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
     rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
+    print!("{} ", begin.elapsed().as_secs_f64());
     rnd_dst.save("ppu.bmp").unwrap();
+    println!("{}", begin.elapsed().as_secs_f64());
 }

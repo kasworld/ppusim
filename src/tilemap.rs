@@ -34,6 +34,7 @@ impl TileMap {
             enable: false,
         }
     }
+    
     pub fn new_random(dst_w: usize, dst_h: usize) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
@@ -55,9 +56,11 @@ impl TileMap {
 
         rtn
     }
+
     pub fn calc_area(self) -> usize {
         self.wh.0 as usize * self.wh.1 as usize
     }
+
     pub fn new_random2(offset: usize, dst_w: usize, dst_h: usize) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
