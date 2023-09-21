@@ -26,6 +26,14 @@ impl TileMapBuffer {
         rtn
     }
 
+    pub fn new_seq() -> Self {
+        let mut rtn = Self::new_empty();
+        for i in 0..TILE_MAP_BUFFER_SIZE {
+            rtn.0[i] = (i % 256) as TileVecIndex;
+        }
+        rtn
+    }
+
     pub fn get_at(&self, index: usize) -> TileVecIndex {
         self.0[index]
     }

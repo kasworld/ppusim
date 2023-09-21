@@ -1,4 +1,4 @@
-use std::ops::{BitAnd, Shl, Shr};
+use std::ops::{BitAnd, Shl};
 
 use crate::rgba::{self, RGBA};
 use image;
