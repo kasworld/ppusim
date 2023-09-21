@@ -20,7 +20,7 @@ impl TileMapVec {
         }
         rtn
     }
-    pub fn render2<'a>(
+    pub fn render<'a>(
         &self,
         dst: &'a mut RgbaImage,
         tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
