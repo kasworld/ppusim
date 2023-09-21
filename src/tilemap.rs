@@ -2,8 +2,7 @@ use rand::Rng;
 
 use crate::{
     palette::{self},
-    render_dst,
-    rgba::RGBA,
+    rgba::{self, RGBA},
     tile::{self},
     tile_vec,
     tilemap_buffer::{self},
@@ -69,13 +68,13 @@ impl TileMap {
         let tlmap_w = self.wh.0 as usize;
         let tm_x = dst_x - self.pos.0 as usize;
         if tm_x >= tlmap_w * tile::TILE_WIDTH {
-            return 0;
+            return rgba::new_zero();
         }
 
         let tlmap_h = self.wh.1 as usize;
         let tm_y = dst_y - self.pos.1 as usize;
         if tm_y >= tlmap_h * tile::TILE_HEIGHT {
-            return 0;
+            return rgba::new_zero();
         }
 
         pal.get_at(
@@ -88,107 +87,6 @@ impl TileMap {
                 ) as usize,
             )[tm_y % tile::TILE_HEIGHT][tm_x % tile::TILE_WIDTH] as usize,
         )
-    }
-
-    pub fn calc_render_count(self, dstw: usize, dsth: usize) -> usize {
-        if !self.enable {
-            return 0;
-        }
-        let (_, _, _, _, render_width, render_height) = self.calc_render_vars(dstw, dsth);
-        if render_width <= 0 || render_height <= 0 {
-            // out of screen
-            return 0;
-        }
-        render_width as usize * render_height as usize
-    }
-
-    // render_width render_height can negative if out of screen
-    pub fn calc_render_vars(
-        self,
-        dstw: usize,
-        dsth: usize,
-    ) -> (usize, usize, usize, usize, isize, isize) {
-        let (render_start_x, tile_start_x) = if self.pos.0 < 0 {
-            (0 as usize, -(self.pos.0 as isize) as usize)
-        } else {
-            (self.pos.0 as usize, 0 as usize)
-        };
-        let (render_start_y, tile_start_y) = if self.pos.1 < 0 {
-            (0 as usize, -(self.pos.1 as isize) as usize)
-        } else {
-            (self.pos.1 as usize, 0 as usize)
-        };
-        let render_width = min(
-            self.wh.0 as isize * tile::TILE_WIDTH as isize - tile_start_x as isize,
-            dstw as isize - render_start_x as isize,
-        );
-        let render_height = min(
-            self.wh.1 as isize * tile::TILE_HEIGHT as isize - tile_start_y as isize,
-            dsth as isize - render_start_y as isize,
-        );
-        return (
-            render_start_x,
-            render_start_y,
-            tile_start_x,
-            tile_start_y,
-            render_width,
-            render_height,
-        );
-    }
-
-    pub fn render<'a>(
-        self,
-        dst: &'a mut render_dst::RenderDst,
-        tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
-        tilevec: &'a tile_vec::TileVec,
-        pal: &'a palette::Palette,
-    ) -> &'a mut render_dst::RenderDst {
-        if !self.enable {
-            return dst;
-        }
-        let (
-            render_start_x,
-            render_start_y,
-            tile_start_x,
-            tile_start_y,
-            render_width,
-            render_height,
-        ) = self.calc_render_vars(dst.w, dst.h);
-        if render_width <= 0 || render_height <= 0 {
-            // out of screen
-            return dst;
-        }
-
-        let lower_palette = pal.get_lower(self.upper_palette_index);
-        let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
-        let tlmap_w = self.wh.0 as usize;
-        let tlmap_h = self.wh.1 as usize;
-        let tilemapbuff =
-            tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
-
-        for y in 0..render_height as usize {
-            let tly_cur = tile_start_y + y;
-            let tly = tly_cur / tile::TILE_HEIGHT;
-            let tly_d = tly_cur % tile::TILE_HEIGHT;
-            let dst_bufbase = dst.w * (render_start_y + y);
-            let tilemap_base = tly * tlmap_w;
-
-            for x in 0..render_width as usize {
-                let tlx_cur = tile_start_x + x;
-                // let tlx = tlx_cur / tile::TILE_WIDTH;
-                // let tlx_d = tlx_cur % tile::TILE_WIDTH;
-                // let rnd_x = render_start_x + x;
-                // let lower_tl_index = tilemapbuff[tilemap_base + tlx] as usize;
-                // let tl = lower_tilevec[lower_tl_index];
-                // dst.buffer[dst_bufbase + rnd_x] = lower_palette[tl[tly_d][tlx_d] as usize];
-                // optimized
-                dst.buffer[dst_bufbase + render_start_x + x] = lower_palette[lower_tilevec
-                    [tilemapbuff[tilemap_base + tlx_cur / tile::TILE_WIDTH] as usize][tly_d]
-                    [tlx_cur % tile::TILE_WIDTH]
-                    as usize];
-            }
-        }
-        dst
     }
 }
 

@@ -1,4 +1,6 @@
-use crate::{palette, render_dst, tile_vec, tilemap, tilemap_buffer};
+use image::RgbaImage;
+
+use crate::{palette, rgba, tile_vec, tilemap, tilemap_buffer};
 
 pub const TILE_MAP_VEC_SIZE: usize = 4096;
 
@@ -16,39 +18,20 @@ impl TileMapVec {
         }
         rtn
     }
-    pub fn calc_render_count(self, dstw: usize, dsth: usize) -> usize {
-        let mut sum = 0;
-        for tm in &self.0 {
-            sum += tm.calc_render_count(dstw, dsth);
-        }
-        sum
-    }
-    pub fn render<'a>(
-        &self,
-        mut dst: &'a mut render_dst::RenderDst,
-        tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
-        tilevec: &'a tile_vec::TileVec,
-        pal: &'a palette::Palette,
-    ) -> &'a mut render_dst::RenderDst {
-        for tm in &self.0 {
-            dst = tm.render(dst, tilemapbuffer, tilevec, pal)
-        }
-        dst
-    }
-
     pub fn render2<'a>(
         &self,
-        dst: &'a mut render_dst::RenderDst,
+        dst: &'a mut RgbaImage,
         tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
         tilevec: &'a tile_vec::TileVec,
         pal: &'a palette::Palette,
-    ) -> &'a mut render_dst::RenderDst {
-        for y in 0..dst.h {
-            for x in 0..dst.w {
-                let buf_pos = y * dst.w + x;
+    ) -> &'a mut RgbaImage {
+        for y in 0..dst.height() {
+            for x in 0..dst.width() {
                 for tm in &self.0 {
-                    dst.buffer[buf_pos] = tm.get_rbga_at_dst(x, y, tilemapbuffer, tilevec, pal);
-                    if dst.buffer[buf_pos] != 0 {
+                    let px =
+                        tm.get_rbga_at_dst(x as usize, y as usize, tilemapbuffer, tilevec, pal);
+                    dst.put_pixel(x, y, px);
+                    if px != rgba::new_zero() {
                         break; // skip rendered pixel
                     }
                 }

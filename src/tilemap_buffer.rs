@@ -30,10 +30,6 @@ impl TileMapBuffer {
         self.0[start + index]
     }
 
-    pub fn get_buffer<'a>(&'a self, start: usize, w: usize, h: usize) -> &'a [TileVecIndex] {
-        &self.0[start..start + w * h]
-    }
-
     pub fn save(self) {
         let mut f = File::create(get_filename()).unwrap();
         f.write_all(as_u8_slice(&self.0)).unwrap();
