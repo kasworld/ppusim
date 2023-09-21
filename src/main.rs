@@ -22,8 +22,9 @@ fn main() {
 
     rnd_dst = tile_map_def.render2(rnd_dst, &tile_map_buffer, &tile_def, &palette);
 
-    _ = rnd_dst;
     
     println!("render {} sec", begin.elapsed().as_secs_f64());
+
+    rnd_dst.save("ppu.bmp").unwrap();
 
 }
