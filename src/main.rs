@@ -2,8 +2,8 @@ use std::time::Instant;
 
 use ppusim::{palette, render_dst::RenderDst, tile_vec, tilemap_buffer, tilemap_vec};
 
-const DSTW :usize = 2047;
-const DSTH :usize = 2047;
+const DSTW :usize = 1920;
+const DSTH :usize = 1080;
 
 
 fn main() {

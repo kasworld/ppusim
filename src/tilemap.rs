@@ -34,8 +34,14 @@ impl TileMap {
         rtn.enable = true;
         let tw = (dst_w / tile::TILE_WIDTH) as u8;
         let th = (dst_h / tile::TILE_HEIGHT) as u8;
-        rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
-        rtn.pos = (rng.gen_range(-(dst_w as i16)..dst_w as i16), rng.gen_range(-(dst_h as i16)..dst_h as i16));
+
+        rtn.wh = (tw, th);
+        rtn.pos = (0, 0);
+        // rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
+        // rtn.pos = (
+        //     rng.gen_range(-(dst_w as i16)..dst_w as i16),
+        //     rng.gen_range(-(dst_h as i16)..dst_h as i16),
+        // );
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
         rtn.tilemap_buffer_index = rng.gen_range(
@@ -114,14 +120,17 @@ impl TileMap {
 
             for x in 0..render_width as usize {
                 let tlx_cur = tile_start_x + x;
-                let tlx = tlx_cur / tile::TILE_WIDTH;
-                let tlx_d = tlx_cur % tile::TILE_WIDTH;
-                let rnd_x = render_start_x + x;
-
-                let lower_tl_index = tilemapbuff[tilemap_base + tlx] as usize;
-                let tl = lower_tilevec[lower_tl_index];
-
-                dst.buffer[dst_bufbase + rnd_x] = lower_palette[tl[tly_d][tlx_d] as usize];
+                // let tlx = tlx_cur / tile::TILE_WIDTH;
+                // let tlx_d = tlx_cur % tile::TILE_WIDTH;
+                // let rnd_x = render_start_x + x;
+                // let lower_tl_index = tilemapbuff[tilemap_base + tlx] as usize;
+                // let tl = lower_tilevec[lower_tl_index];
+                // dst.buffer[dst_bufbase + rnd_x] = lower_palette[tl[tly_d][tlx_d] as usize];
+                // optimized
+                dst.buffer[dst_bufbase + render_start_x + x] = lower_palette[lower_tilevec
+                    [tilemapbuff[tilemap_base + tlx_cur / tile::TILE_WIDTH] as usize][tly_d]
+                    [tlx_cur % tile::TILE_WIDTH]
+                    as usize];
             }
         }
         dst
