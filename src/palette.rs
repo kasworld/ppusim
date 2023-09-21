@@ -1,4 +1,4 @@
-use crate::rgba::{RGBA, self};
+use crate::rgba::{self, RGBA};
 use image;
 use rand::Rng;
 
