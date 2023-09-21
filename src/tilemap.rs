@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::{palette, render_dst, tile, tile_vec, tilemap_buffer};
+use crate::{palette, render_dst, rgba::RGBA, tile, tile_vec, tilemap_buffer};
 
 // sprite or background plane
 #[derive(Clone, Copy, Debug)]
@@ -50,6 +50,50 @@ impl TileMap {
 
         rtn
     }
+
+    pub fn get_rbga_at_dst(
+        self,
+        dst_x: usize,
+        dst_y: usize,
+        tilemapbuffer: &tilemap_buffer::TileMapBuffer,
+        tilevec: &tile_vec::TileVec,
+        pal: &palette::Palette,
+    ) -> Option<RGBA> {
+        let tlmap_w = self.wh.0 as usize;
+        let tm_x = dst_x - self.pos.0 as usize;
+        if tm_x >= tlmap_w * tile::TILE_WIDTH {
+            return Option::None;
+        }
+
+        let tlmap_h = self.wh.1 as usize;
+        let tm_y = dst_y - self.pos.1 as usize;
+        if tm_y >= tlmap_h * tile::TILE_HEIGHT {
+            return Option::None;
+        }
+
+        let lower_palette = pal.get_lower(self.upper_palette_index);
+        let lower_tilevec = tilevec.get_lower(self.upper_tilevec_index);
+        let tilemapbuff =
+            tilemapbuffer.get_buffer(self.tilemap_buffer_index as usize, tlmap_w, tlmap_h);
+
+        // tm_x, tm_y point in tilemap pixel
+        // let tly = tm_y / tile::TILE_HEIGHT;
+        // let tly_d = tm_y % tile::TILE_HEIGHT;
+        // let tlx = tm_x / tile::TILE_WIDTH;
+        // let tlx_d = tm_x % tile::TILE_WIDTH;
+        // let tilemap_base = tly * tlmap_w;
+        // let lower_tl_index = tilemapbuff[tilemap_base + tlx] as usize;
+        // let tl = lower_tilevec[lower_tl_index];
+        // return Option::Some(lower_palette[tl[tly_d][tlx_d] as usize]);
+
+        return Option::Some(
+            lower_palette[lower_tilevec[tilemapbuff
+                [(tm_y / tile::TILE_HEIGHT) * tlmap_w + tm_x / tile::TILE_WIDTH]
+                as usize][tm_y % tile::TILE_HEIGHT][tm_x % tile::TILE_WIDTH]
+                as usize],
+        );
+    }
+
     pub fn calc_render_count(self, dstw: usize, dsth: usize) -> usize {
         if !self.enable {
             return 0;
@@ -61,6 +105,7 @@ impl TileMap {
         }
         render_width as usize * render_height as usize
     }
+
     // render_width render_height can negative if out of screen
     pub fn calc_render_vars(
         self,
@@ -94,6 +139,7 @@ impl TileMap {
             render_height,
         );
     }
+
     pub fn render<'a>(
         self,
         dst: &'a mut render_dst::RenderDst,

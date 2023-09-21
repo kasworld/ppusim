@@ -19,7 +19,7 @@ fn main() {
     println!("init {} sec", begin.elapsed().as_secs_f64() );
     let begin = Instant::now();
 
-    rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
+    rnd_dst = tile_map_def.render2(rnd_dst, &tile_map_buffer, &tile_def, &palette);
 
     _ = rnd_dst;
     
