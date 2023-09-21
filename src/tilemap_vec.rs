@@ -12,9 +12,12 @@ impl TileMapVec {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
     pub fn new_random(dst_w: usize, dst_h: usize) -> Self {
+        let mut offset: usize = 0;
         let mut rtn = Self::new_empty();
+        let mut l :usize = 0;
         for i in 0..TILE_MAP_VEC_SIZE {
-            rtn.0[i] = tilemap::TileMap::new_random(dst_w, dst_h);
+            rtn.0[i] = tilemap::TileMap::new_random2(offset, dst_w, dst_h);
+            offset += rtn.0[i].calc_area(); 
         }
         rtn
     }

@@ -41,18 +41,42 @@ impl TileMap {
         let tw = (dst_w / tile::TILE_WIDTH) as u8;
         let th = (dst_h / tile::TILE_HEIGHT) as u8;
 
-        rtn.wh = (tw, th);
-        rtn.pos = (0, 0);
-        // rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
-        // rtn.pos = (
-        //     rng.gen_range(-(dst_w as i16)..dst_w as i16),
-        //     rng.gen_range(-(dst_h as i16)..dst_h as i16),
-        // );
+        // rtn.wh = (tw, th);
+        // rtn.pos = (0, 0);
+        rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
+        rtn.pos = (
+            rng.gen_range(-(dst_w as i16)..dst_w as i16),
+            rng.gen_range(-(dst_h as i16)..dst_h as i16),
+        );
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
-        rtn.tilemap_buffer_index = rng.gen_range(
-            0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.wh.0 as usize * rtn.wh.1 as usize,
-        ) as u32;
+        rtn.tilemap_buffer_index =
+            rng.gen_range(0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.calc_area()) as u32;
+
+        rtn
+    }
+    pub fn calc_area(self) -> usize {
+        self.wh.0 as usize * self.wh.1 as usize
+    }
+    pub fn new_random2(offset: usize, dst_w: usize, dst_h: usize) -> Self {
+        let mut rng = rand::thread_rng();
+        let mut rtn = Self::new_empty();
+        rtn.enable = true;
+        let tw = (dst_w / tile::TILE_WIDTH) as u8;
+        let th = (dst_h / tile::TILE_HEIGHT) as u8;
+
+        // rtn.wh = (tw, th);
+        // rtn.pos = (0, 0);
+        rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
+        rtn.pos = (
+            rng.gen_range(-(dst_w as i16)..dst_w as i16),
+            rng.gen_range(-(dst_h as i16)..dst_h as i16),
+        );
+        rtn.upper_palette_index = rng.gen::<u8>();
+        rtn.upper_tilevec_index = rng.gen::<u8>();
+
+        rtn.tilemap_buffer_index =
+            ((offset + rtn.calc_area()) % tilemap_buffer::TILE_MAP_BUFFER_SIZE) as u32;
 
         rtn
     }
