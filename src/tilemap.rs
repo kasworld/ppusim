@@ -42,13 +42,13 @@ impl TileMap {
         let tw = (dst_w / tile::TILE_WIDTH) as u8;
         let th = (dst_h / tile::TILE_HEIGHT) as u8;
 
-        rtn.wh = (tw, th);
-        rtn.pos = (0, 0);
-        // rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
-        // rtn.pos = (
-        //     rng.gen_range(-(dst_w as i16)..dst_w as i16),
-        //     rng.gen_range(-(dst_h as i16)..dst_h as i16),
-        // );
+        // rtn.wh = (tw, th);
+        // rtn.pos = (0, 0);
+        rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
+        rtn.pos = (
+            rng.gen_range(-(dst_w as i16)..dst_w as i16),
+            rng.gen_range(-(dst_h as i16)..dst_h as i16),
+        );
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
         rtn.tilemap_buffer_index = rng.gen_range(

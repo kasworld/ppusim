@@ -46,13 +46,10 @@ impl TileMapVec {
         for y in 0..dst.h {
             for x in 0..dst.w {
                 let buf_pos = y * dst.w + x;
-                if dst.buffer[buf_pos] != 0 {
-                    continue; // skip rendered pixel
-                }
                 for tm in &self.0 {
                     dst.buffer[buf_pos] = tm.get_rbga_at_dst(x, y, tilemapbuffer, tilevec, pal);
                     if dst.buffer[buf_pos] != 0 {
-                        break;
+                        break; // skip rendered pixel
                     }
                 }
             }
