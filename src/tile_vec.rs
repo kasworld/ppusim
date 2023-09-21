@@ -20,6 +20,9 @@ impl TileVec {
         }
         rtn
     }
+    pub fn get_at(&self, hi: u8, index :usize)->tile::Tile{
+        self.0[hi as usize * LOWER_TILE_VEC_SIZE + index]
+    }
     pub fn get_lower<'a>(&'a self, hi: u8) -> &'a [tile::Tile] {
         let start = hi as usize * LOWER_TILE_VEC_SIZE;
         &self.0[start..start + LOWER_TILE_VEC_SIZE]

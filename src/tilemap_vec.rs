@@ -50,12 +50,9 @@ impl TileMapVec {
                     continue; // skip rendered pixel
                 }
                 for tm in &self.0 {
-                    let c = tm.get_rbga_at_dst(x, y, tilemapbuffer, tilevec, pal);
-                    match c {
-                        Some(v) => {
-                            dst.buffer[buf_pos] = v;
-                        }
-                        None => {}
+                    dst.buffer[buf_pos] = tm.get_rbga_at_dst(x, y, tilemapbuffer, tilevec, pal);
+                    if dst.buffer[buf_pos] != 0 {
+                        break;
                     }
                 }
             }

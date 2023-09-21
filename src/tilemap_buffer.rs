@@ -25,6 +25,11 @@ impl TileMapBuffer {
         }
         rtn
     }
+
+    pub fn get_at(&self, start: usize, index :usize)->TileVecIndex{
+        self.0[start + index]
+    }
+
     pub fn get_buffer<'a>(&'a self, start: usize, w: usize, h: usize) -> &'a [TileVecIndex] {
         &self.0[start..start + w * h]
     }

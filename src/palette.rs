@@ -1,4 +1,4 @@
-use crate::rgba::{RGBA, self};
+use crate::rgba::{self, RGBA};
 use rand::Rng;
 use std::{
     fs::File,
@@ -25,6 +25,10 @@ impl Palette {
             rtn.0[i] = rng.gen::<u32>();
         }
         rtn
+    }
+
+    pub fn get_at(&self, hi: u8, index: usize) -> RGBA {
+        self.0[hi as usize * LOWER_PALETTE_SIZE + index]
     }
     pub fn get_lower<'a>(&'a self, hi: u8) -> &'a [RGBA] {
         let start = hi as usize * LOWER_PALETTE_SIZE;
@@ -55,4 +59,3 @@ impl Palette {
 fn get_filename() -> String {
     "palette.data".to_owned()
 }
-
