@@ -82,8 +82,9 @@ impl TileMap {
             tilevec.get_at(
                 self.upper_tilevec_index,
                 tilemapbuffer.get_at(
-                    self.tilemap_buffer_index as usize,
-                    (tm_y / tile::TILE_HEIGHT) * tlmap_w + tm_x / tile::TILE_WIDTH,
+                    self.tilemap_buffer_index as usize
+                        + (tm_y / tile::TILE_HEIGHT) * tlmap_w
+                        + tm_x / tile::TILE_WIDTH,
                 ) as usize,
             )[tm_y % tile::TILE_HEIGHT][tm_x % tile::TILE_WIDTH] as usize,
         )
