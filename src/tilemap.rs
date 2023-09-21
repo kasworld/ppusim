@@ -34,7 +34,7 @@ impl TileMap {
             enable: false,
         }
     }
-    
+
     pub fn new_random(dst_w: usize, dst_h: usize) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
@@ -61,7 +61,7 @@ impl TileMap {
         self.wh.0 as usize * self.wh.1 as usize
     }
 
-    pub fn new_random2(offset: usize, dst_w: usize, dst_h: usize) -> Self {
+    pub fn new_random2(mut offset: usize, dst_w: usize, dst_h: usize) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
         rtn.enable = true;
@@ -78,8 +78,11 @@ impl TileMap {
         rtn.upper_palette_index = rng.gen::<u8>();
         rtn.upper_tilevec_index = rng.gen::<u8>();
 
-        rtn.tilemap_buffer_index =
-            ((offset + rtn.calc_area()) % tilemap_buffer::TILE_MAP_BUFFER_SIZE) as u32;
+        offset = offset % tilemap_buffer::TILE_MAP_BUFFER_SIZE;
+        if offset + rtn.calc_area() >= tilemap_buffer::TILE_MAP_BUFFER_SIZE {
+            offset = 0;
+        }
+        rtn.tilemap_buffer_index = offset as u32;
 
         rtn
     }

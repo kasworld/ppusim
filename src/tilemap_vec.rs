@@ -11,6 +11,7 @@ impl TileMapVec {
     pub fn new_empty() -> Self {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
+    
     pub fn new_random(dst_w: usize, dst_h: usize) -> Self {
         let mut offset: usize = 0;
         let mut rtn = Self::new_empty();
