@@ -1,3 +1,5 @@
+use std::ops::{BitAnd, Shl, Shr};
+
 use crate::rgba::{self, RGBA};
 use image;
 use rand::Rng;
@@ -28,7 +30,18 @@ impl Palette {
         }
         rtn
     }
-
+    pub fn new_rainbow() -> Self {
+        let mut rtn = Self::new_empty();
+        for i in 0..PALETTE_SIZE {
+            rtn.0[i] = image::Rgba([
+                i.bitand(0x1f).shl(3) as u8,
+                (i >> 5).bitand(0x1f).shl(3) as u8,
+                (i >> 10).bitand(0x1f).shl(3) as u8,
+                0xff,
+            ]);
+        }
+        rtn
+    }
     pub fn get_at(&self, hi: u8, index: usize) -> RGBA {
         self.0[hi as usize * LOWER_PALETTE_SIZE + index]
     }

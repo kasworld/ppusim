@@ -9,7 +9,8 @@ const DSTH: usize = 1080;
 fn main() {
     let begin = Instant::now();
 
-    let palette = palette::Palette::new_random();
+    let palette = palette::Palette::new_rainbow();
+    println!("{:?}", palette);
     // let tile_def = tile_vec::TileVec::new_random();
     let mut tile_def = tile_vec::TileVec::load_from_file("tilesdef.bmp".to_string());
     let tile_map_def = tilemap_vec::TileMapVec::new_random(DSTW, DSTH);
