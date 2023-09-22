@@ -98,7 +98,7 @@ impl TileMap {
         rtn
     }
 
-    pub fn get_pal_index_at_dst(
+    pub fn get_at_dst(
         self,
         dst_x: usize,
         dst_y: usize,

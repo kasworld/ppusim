@@ -41,7 +41,7 @@ impl TileMapVec {
                 let mut i = 0;
                 for tm in &self.0 {
                     let pal_index =
-                        tm.get_pal_index_at_dst(x as usize, y as usize, tilemapbuffer, tilevec);
+                        tm.get_at_dst(x as usize, y as usize, tilemapbuffer, tilevec);
                     if pal_index == 0 {
                         i += 1;
                         continue;
