@@ -22,7 +22,6 @@ tilemap : sprite나 background image 를 구성하기 위한 정보를 담고있
     pos : 좌표 : (signed 16bit)x2  
     wh : 크기 : (unsigned 8bit)x2 가로 세로 타일 수  
     scale : 확대/flip x,y : scale < 0 으로 하면 flip 입니다. 
-    rotate : 회전 x,y,x : 미구현 
     upper_palette_index : 사용할 palette page 8bit, 여러 tilemap 이 palette를 공유가능하다.
     upper_tilevec_index : 사용할 tile_vec page 8bit, 여러 tilemap 이 tile_vec page를 공유가능하다.
     tilemap_buffer_index : tilemap buffer 에서 사용할 타일 목록 시작 지점 
