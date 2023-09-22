@@ -1,6 +1,6 @@
 use image::RgbaImage;
 
-use crate::{palette, rgba, tile_vec, tilemap, tilemap_buffer};
+use crate::{palette, tile_vec, tilemap, tilemap_buffer};
 
 pub const TILE_MAP_VEC_SIZE: usize = 4096;
 
@@ -40,16 +40,18 @@ impl TileMapVec {
             for x in 0..dst.width() {
                 let mut i = 0;
                 for tm in &self.0 {
-                    let px =
-                        tm.get_rbga_at_dst(x as usize, y as usize, tilemapbuffer, tilevec, pal);
-                    dst.put_pixel(x, y, px);
-                    if px != rgba::new_zero() {
-                        if max_tilemap_num_rendered < i {
-                            max_tilemap_num_rendered = i;
-                        } 
-                        break; // skip rendered pixel
+                    let pal_index =
+                        tm.get_pal_index_at_dst(x as usize, y as usize, tilemapbuffer, tilevec);
+                    if pal_index == 0 {
+                        i +=1;
+                        continue;
                     }
-                    i +=1;
+                    let px = pal.get_at(tm.upper_palette_index, pal_index);
+                    dst.put_pixel(x, y, px);
+                    if max_tilemap_num_rendered < i {
+                        max_tilemap_num_rendered = i;
+                    } 
+                    break; // skip rendered pixel
                 }
             }
         }

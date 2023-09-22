@@ -1,4 +1,5 @@
 use crate::rgba::{self, RGBA};
+use crate::tile;
 use image::{self, GenericImageView, RgbaImage};
 use rand::Rng;
 use std::ops::{BitAnd, Shl};
@@ -86,7 +87,7 @@ impl Palette {
         img.save(filename).unwrap();
     }
     
-    pub fn get_at(&self, hi: u8, index: usize) -> RGBA {
-        self.0[hi as usize * LOWER_PALETTE_SIZE + index]
+    pub fn get_at(&self, hi: u8, index: tile::PaletteIndex) -> RGBA {
+        self.0[hi as usize * LOWER_PALETTE_SIZE + index as usize]
     }
 }

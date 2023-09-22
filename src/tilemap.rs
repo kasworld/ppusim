@@ -2,7 +2,6 @@ use rand::Rng;
 
 use crate::{
     palette::{self},
-    rgba::{self, RGBA},
     tile::{self},
     tile_vec,
     tilemap_buffer::{self},
@@ -102,37 +101,33 @@ impl TileMap {
         rtn
     }
 
-    pub fn get_rbga_at_dst(
+    pub fn get_pal_index_at_dst(
         self,
         dst_x: usize,
         dst_y: usize,
         tilemapbuffer: &tilemap_buffer::TileMapBuffer,
         tilevec: &tile_vec::TileVec,
-        pal: &palette::Palette,
-    ) -> RGBA {
+    ) -> tile::PaletteIndex {
         let tlmap_w = self.wh.0 as usize;
         let tm_x = dst_x - self.pos.0 as usize;
         if tm_x >= tlmap_w * tile::TILE_WIDTH {
-            return rgba::new_zero();
+            return 0;
         }
 
         let tlmap_h = self.wh.1 as usize;
         let tm_y = dst_y - self.pos.1 as usize;
         if tm_y >= tlmap_h * tile::TILE_HEIGHT {
-            return rgba::new_zero();
+            return 0;
         }
 
-        pal.get_at(
-            self.upper_palette_index,
-            tilevec.get_at(
-                self.upper_tilevec_index,
-                tilemapbuffer.get_at(
-                    self.tilemap_buffer_index as usize
-                        + (tm_y / tile::TILE_HEIGHT) * tlmap_w
-                        + tm_x / tile::TILE_WIDTH,
-                ) as usize,
-            )[tm_y % tile::TILE_HEIGHT][tm_x % tile::TILE_WIDTH] as usize,
-        )
+        tilevec.get_at(
+            self.upper_tilevec_index,
+            tilemapbuffer.get_at(
+                self.tilemap_buffer_index as usize
+                    + (tm_y / tile::TILE_HEIGHT) * tlmap_w
+                    + tm_x / tile::TILE_WIDTH,
+            ) as usize,
+        )[tm_y % tile::TILE_HEIGHT][tm_x % tile::TILE_WIDTH]
     }
 }
 
