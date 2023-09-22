@@ -87,6 +87,9 @@ impl TileMap {
             rng.gen_range(-(dst_w as i16)..dst_w as i16),
             rng.gen_range(-(dst_h as i16)..dst_h as i16),
         );
+
+        rtn.scale = (-2, -2);
+
         rtn.upper_palette_index = (tilemap_index % (palette::UPPER_PALETTE_SIZE as usize)) as u8;
         rtn.upper_tilevec_index = (tilemap_index % (tile_vec::UPPER_TILE_VEC_SIZE)) as u8;
 
@@ -106,14 +109,31 @@ impl TileMap {
         tilemapbuffer: &tilemap_buffer::TileMapBuffer,
         tilevec: &tile_vec::TileVec,
     ) -> tile::PaletteIndex {
+        if self.scale.0 == 0 || self.scale.1 == 0 {
+            return 0;
+        }
+
         let tlmap_w = self.wh.0 as usize;
-        let tm_x = dst_x - self.pos.0 as usize;
+        // let tlmap_end_px = self.pos.0 as usize + tlmap_w * tile::TILE_WIDTH;
+        // dstx == tlmap_end_px - ?
+
+        let tm_x = if self.scale.0 > 0 {
+            (dst_x - self.pos.0 as usize) / self.scale.0 as usize
+        } else {
+            (self.pos.0 as usize + tlmap_w * tile::TILE_WIDTH - dst_x)
+                / (-(self.scale.0 as isize)) as usize
+        };
         if tm_x >= tlmap_w * tile::TILE_WIDTH {
             return 0;
         }
 
         let tlmap_h = self.wh.1 as usize;
-        let tm_y = dst_y - self.pos.1 as usize;
+        let tm_y = if self.scale.1 > 0 {
+            (dst_y - self.pos.1 as usize) / self.scale.1 as usize
+        } else {
+            (self.pos.1 as usize + tlmap_h * tile::TILE_HEIGHT - dst_y)
+                / (-(self.scale.1 as isize)) as usize
+        };
         if tm_y >= tlmap_h * tile::TILE_HEIGHT {
             return 0;
         }
