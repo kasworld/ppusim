@@ -23,7 +23,7 @@ impl TileVec {
         }
         rtn
     }
-    
+
     pub fn get_at(&self, hi: u8, index: usize) -> tile::Tile {
         self.0[hi as usize * LOWER_TILE_VEC_SIZE + index]
     }
@@ -31,7 +31,7 @@ impl TileVec {
     // file must bmp 256 color grayscale
     // size TILE_WIDTH * LOWER_TILE_VEC_SIZE
     // size TILE_HEIGHT * UPPER_TILE_VEC_SIZE
-    pub fn load_from_file(filename: String)->Self {
+    pub fn load_from_file(filename: String) -> Self {
         let mut rtn = Self(vec![tile::new_empty(); TILE_VEC_SIZE]);
         let f = match File::open(filename) {
             Ok(f) => f,

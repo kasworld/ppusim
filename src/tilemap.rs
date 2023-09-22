@@ -60,7 +60,12 @@ impl TileMap {
         self.wh.0 as usize * self.wh.1 as usize
     }
 
-    pub fn new_random2(tilemap_index :usize, mut offset: usize, dst_w: usize, dst_h: usize) -> Self {
+    pub fn new_random2(
+        tilemap_index: usize,
+        mut offset: usize,
+        dst_w: usize,
+        dst_h: usize,
+    ) -> Self {
         let mut rng = rand::thread_rng();
         let mut rtn = Self::new_empty();
         rtn.enable = true;
@@ -68,18 +73,10 @@ impl TileMap {
         let th = (dst_h / tile::TILE_HEIGHT) as u8;
 
         let wh_range = match tilemap_index {
-            0..=1023 => {
-                ((1..4),(1..4))
-            } 
-            1024..=2047 =>{
-                ((1..16),(1..16))
-            }
-            2048..=3071 =>{
-                ((1..64),(1..64))
-            }
-            3072..=4095 => {
-                ((1..tw),(1..th))
-            }
+            0..=1023 => ((1..4), (1..4)),
+            1024..=2047 => ((1..16), (1..16)),
+            2048..=3071 => ((1..64), (1..64)),
+            3072..=4095 => ((1..tw), (1..th)),
             _ => {
                 panic!("out of range {}", tilemap_index)
             }

@@ -43,14 +43,14 @@ impl TileMapVec {
                     let pal_index =
                         tm.get_pal_index_at_dst(x as usize, y as usize, tilemapbuffer, tilevec);
                     if pal_index == 0 {
-                        i +=1;
+                        i += 1;
                         continue;
                     }
                     let px = pal.get_at(tm.upper_palette_index, pal_index);
                     dst.put_pixel(x, y, px);
                     if max_tilemap_num_rendered < i {
                         max_tilemap_num_rendered = i;
-                    } 
+                    }
                     break; // skip rendered pixel
                 }
             }

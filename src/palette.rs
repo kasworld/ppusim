@@ -86,7 +86,7 @@ impl Palette {
         }
         img.save(filename).unwrap();
     }
-    
+
     pub fn get_at(&self, hi: u8, index: tile::PaletteIndex) -> RGBA {
         self.0[hi as usize * LOWER_PALETTE_SIZE + index as usize]
     }
