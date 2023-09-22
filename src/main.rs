@@ -17,6 +17,7 @@ fn main() {
 
     loop {
         make_frame(&palette, &tile_def, &tile_map_def, &tile_map_buffer);
+        break;
     }
 }
 
@@ -30,6 +31,7 @@ fn make_frame(
     let mut rnd_dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
     rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
     print!("{} ", begin.elapsed().as_secs_f64());
+    _ = rnd_dst;
     rnd_dst.save("ppu.bmp").unwrap();
     println!("{}", begin.elapsed().as_secs_f64());
 }
