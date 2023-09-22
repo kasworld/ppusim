@@ -33,13 +33,14 @@ impl Palette {
         rtn
     }
 
+    // R:5bit, G:6bit, B:5bit
     pub fn new_rainbow() -> Self {
         let mut rtn = Self::new_empty();
         for i in 0..PALETTE_SIZE {
             rtn.0[i] = image::Rgba([
                 i.bitand(0x1f).shl(3) as u8,
-                (i >> 5).bitand(0x1f).shl(3) as u8,
-                (i >> 10).bitand(0x1f).shl(3) as u8,
+                (i >> 5).bitand(0x3f).shl(2) as u8,
+                (i >> 11).bitand(0x1f).shl(3) as u8,
                 0xff,
             ]);
         }
