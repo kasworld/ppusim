@@ -86,10 +86,10 @@ impl TileMap {
             rng.gen_range(-(dst_h as i16)..dst_h as i16),
         );
 
-        rtn.scale = (1, 1);
+        rtn.scale = (rng.gen_range(-4..=4), rng.gen_range(-4..=4));
 
-        rtn.upper_palette_index = (tilemap_index % (palette::UPPER_PALETTE_SIZE as usize)) as u8;
-        rtn.upper_tilevec_index = (tilemap_index % (tile_vec::UPPER_TILE_VEC_SIZE)) as u8;
+        rtn.upper_palette_index = (tilemap_index % palette::UPPER_PALETTE_SIZE) as u8;
+        rtn.upper_tilevec_index = (tilemap_index % tile_vec::UPPER_TILE_VEC_SIZE) as u8;
 
         offset = offset % tilemap_buffer::TILE_MAP_BUFFER_SIZE;
         if offset + rtn.calc_area() >= tilemap_buffer::TILE_MAP_BUFFER_SIZE {
