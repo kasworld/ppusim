@@ -19,22 +19,15 @@ fn main() {
     let tile_map_buffer = TileMapBuffer::new_seq();
 
     loop {
-        make_frame(&palette, &tile_def, &tile_map_def, &tile_map_buffer);
+        let begin = Instant::now();
+        let mut dst = &mut image::RgbaImage::new(
+            DSTW as u32, DSTH as u32);
+        dst = tile_map_def.render(
+            dst, &tile_map_buffer, &tile_def, &palette);
+        print!("render {} ", begin.elapsed().as_secs_f64());
+        _ = dst;
+        dst.save("ppu.bmp").unwrap();
+        println!("save {}", begin.elapsed().as_secs_f64());
         break;
     }
-}
-
-fn make_frame(
-    palette: &Palette,
-    tile_def: &TileVec,
-    tile_map_def: &TileMapVec,
-    tile_map_buffer: &TileMapBuffer,
-) {
-    let begin = Instant::now();
-    let mut rnd_dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
-    rnd_dst = tile_map_def.render(rnd_dst, &tile_map_buffer, &tile_def, &palette);
-    print!("render {} ", begin.elapsed().as_secs_f64());
-    _ = rnd_dst;
-    rnd_dst.save("ppu.bmp").unwrap();
-    println!("save {}", begin.elapsed().as_secs_f64());
 }
