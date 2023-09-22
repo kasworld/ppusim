@@ -1,7 +1,7 @@
 use std::{fs::File, io::BufReader};
 
 use crate::tile;
-use image::{self, GenericImageView, Pixel};
+use image::{self, GenericImageView, GrayImage, Pixel};
 
 pub const UPPER_TILE_VEC_SIZE: usize = 256;
 
@@ -62,5 +62,28 @@ impl TileVec {
             }
         }
         rtn
+    }
+
+    pub fn save_to_file(&self, filename: String) {
+        let mut img = GrayImage::new(
+            (LOWER_TILE_VEC_SIZE * (tile::TILE_WIDTH as usize)) as u32,
+            (UPPER_TILE_VEC_SIZE * (tile::TILE_HEIGHT as usize)) as u32,
+        );
+        for y in 0..UPPER_TILE_VEC_SIZE {
+            for x in 0..LOWER_TILE_VEC_SIZE {
+                for tx in 0..tile::TILE_WIDTH {
+                    let tl = self.0[x + y * LOWER_TILE_VEC_SIZE];
+                    for ty in 0..tile::TILE_HEIGHT {
+                        let px = tl[ty][tx];
+                        img.put_pixel(
+                            (x * (tile::TILE_WIDTH as usize) + tx) as u32,
+                            (y * (tile::TILE_HEIGHT as usize) + ty) as u32,
+                            image::Luma([px]),
+                        );
+                    }
+                }
+            }
+        }
+        img.save(filename).unwrap();
     }
 }
