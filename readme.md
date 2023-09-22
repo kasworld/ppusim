@@ -6,11 +6,16 @@ rgab r,g,b,a 각 8bit (a 는 미사용)
 
 palette : 256 개 의 sub palette 로 구성 
 
+    file로 읽고 쓸때는 256x256xRGBA bmp 를 사용
+
 sub palette : 256 개의 rgba  
 
 tile : 8 x 8 크기, 각 구성 요소는 sub palette index (8bit 크기) 를 가진다.  
 
 tile_vec : tile의 목록,  256 page 의 256 tile 
+
+    file로 읽고 쓸때는 2048x2048 256gray bmp사용 
+    각 페이지는 16x16 구역으로 나뉘어 진다. 
 
 tilemap : sprite나 background image 를 구성하기 위한 정보를 담고있다. 
 
@@ -32,3 +37,5 @@ tilemap_buffer : tilemap에서 사용할 tile 번호들의 목록
     각 tilemap에서 사용하는 tile 은 서로 겹칠 수 있다. 
     ( 같은 tilemap_buffer 공간을 공유 가능, 따라서 tile도 공유가능 ) 
     tilemap의 upper_tilevec_index  와 여기의 tile index 를 사용해서 tile_vec의 위치를 찾는다. 
+
+
