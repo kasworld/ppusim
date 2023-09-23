@@ -8,9 +8,14 @@ use crate::{
 #[derive(Clone, Copy, Debug)]
 pub struct TileMap {
     pub enable: bool,
-    pub pos: (i16, i16),
-    pub wh: (u8, u8),
-    pub scale: (i8, i8),
+    pub flip_x: bool,
+    pub flip_y: bool,
+    pub x: i16,
+    pub y: i16,
+    pub w: u8,
+    pub h: u8,
+    pub scale_x: u8,
+    pub scale_y: u8,
     pub upper_palette_index: u8,
     pub upper_tilevec_index: u8,
     pub tilemap_buffer_index: u32,
@@ -27,9 +32,14 @@ pub struct TileMap {
 impl TileMap {
     pub fn new_empty() -> Self {
         Self {
-            pos: (0, 0),
-            wh: (1, 1),
-            scale: (1, 1),
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0,
+            scale_x: 1,
+            scale_y: 1,
+            flip_x: false,
+            flip_y: false,
             upper_palette_index: 0,
             upper_tilevec_index: 0,
             tilemap_buffer_index: 0,
@@ -46,25 +56,25 @@ impl TileMap {
     }
 
     pub fn calc_area(self) -> usize {
-        self.wh.0 as usize * self.wh.1 as usize
+        self.w as usize * self.h as usize
     }
 
     fn is_enbaled(self) -> bool {
-        self.enable && self.scale.0 != 0 && self.scale.1 != 0
+        self.enable && self.scale_x != 0 && self.scale_y != 0
     }
 
     pub fn is_in_dst(&mut self, dstw: usize, dsth: usize) -> bool {
-        self.px_w = self.wh.0 as isize * tile::TILE_WIDTH as isize;
-        self.px_h = self.wh.1 as isize * tile::TILE_WIDTH as isize;
-        self.scaled_w = self.px_w * (self.scale.0.abs() as isize);
-        self.scaled_h = self.px_h * (self.scale.1.abs() as isize);
-        self.end_x = self.pos.0 as isize + self.scaled_w;
-        self.end_y = self.pos.1 as isize + self.scaled_h;
+        self.px_w = self.w as isize * tile::TILE_WIDTH as isize;
+        self.px_h = self.h as isize * tile::TILE_WIDTH as isize;
+        self.scaled_w = self.px_w * (self.scale_x as isize);
+        self.scaled_h = self.px_h * (self.scale_y as isize);
+        self.end_x = self.x as isize + self.scaled_w;
+        self.end_y = self.y as isize + self.scaled_h;
 
         if !self.is_enbaled() {
             return false;
         }
-        if self.pos.0 as isize >= dstw as isize || self.pos.1 as isize >= dsth as isize {
+        if self.x as isize >= dstw as isize || self.y as isize >= dsth as isize {
             return false;
         }
         if self.end_x < 0 || self.end_y < 0 {
@@ -81,19 +91,19 @@ impl TileMap {
         tilemapbuffer: &tilemap_buffer::TileMapBuffer,
         tilevec: &tile_vec::TileVec,
     ) -> tile::PaletteIndex {
-        let tm_px_x = if self.scale.0 > 0 {
-            (dst_x - (self.pos.0 as isize)) / (self.scale.0 as isize)
+        let tm_px_x = if self.flip_x == false {
+            (dst_x - (self.x as isize)) / (self.scale_x as isize)
         } else {
-            (self.end_x - dst_x) / (self.scale.0.abs() as isize)
+            (self.end_x - dst_x) / (self.scale_x as isize)
         };
         if tm_px_x < 0 || tm_px_x >= self.px_w {
             return 0;
         }
 
-        let tm_px_y = if self.scale.1 > 0 {
-            (dst_y - (self.pos.1 as isize)) / (self.scale.1 as isize)
+        let tm_px_y = if self.flip_y == false {
+            (dst_y - (self.y as isize)) / (self.scale_y as isize)
         } else {
-            (self.end_y - dst_y) / (self.scale.1.abs() as isize)
+            (self.end_y - dst_y) / (self.scale_y as isize)
         };
         if tm_px_y < 0 || tm_px_y >= self.px_h {
             return 0;
@@ -102,7 +112,7 @@ impl TileMap {
             self.upper_tilevec_index,
             tilemapbuffer.get_at(
                 self.tilemap_buffer_index as usize
-                    + (tm_px_y as usize / tile::TILE_HEIGHT) * (self.wh.0 as usize)
+                    + (tm_px_y as usize / tile::TILE_HEIGHT) * (self.w as usize)
                     + tm_px_x as usize / tile::TILE_WIDTH,
             ) as usize,
         )[tm_px_y as usize % tile::TILE_HEIGHT][tm_px_x as usize % tile::TILE_WIDTH]

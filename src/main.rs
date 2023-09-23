@@ -75,13 +75,15 @@ pub fn new_random2_tilemap(
             panic!("out of range {}", tilemap_index)
         }
     };
-    rtn.wh = (rng.gen_range(wh_range.0), rng.gen_range(wh_range.1));
-    rtn.pos = (
-        rng.gen_range(-(dst_w as i16)..dst_w as i16),
-        rng.gen_range(-(dst_h as i16)..dst_h as i16),
-    );
+    rtn.w = rng.gen_range(wh_range.0);
+    rtn.h = rng.gen_range(wh_range.1);
+    rtn.x = rng.gen_range(-(dst_w as i16)..dst_w as i16);
+    rtn.y = rng.gen_range(-(dst_h as i16)..dst_h as i16);
 
-    rtn.scale = (rng.gen_range(-4..=4), rng.gen_range(-4..=4));
+    rtn.scale_x = rng.gen_range(1..=4);
+    rtn.scale_y = rng.gen_range(1..=4);
+    rtn.flip_x = rng.gen_bool(0.5);
+    rtn.flip_y = rng.gen_bool(0.5);
 
     rtn.upper_palette_index = (tilemap_index % palette::UPPER_PALETTE_SIZE) as u8;
     rtn.upper_tilevec_index = (tilemap_index % tile_vec::UPPER_TILE_VEC_SIZE) as u8;
@@ -107,12 +109,14 @@ pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
 pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
     let mut rtn = TileMap::new_empty();
     rtn.enable = true;
-    rtn.wh = (16, 16); // cover full sub tilevec page
-    rtn.pos = (
-        ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16,
-        ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16,
-    );
-    rtn.scale = (1, 1);
+    rtn.w = 16; // cover full sub tilevec page
+    rtn.h = 16; // cover full sub tilevec page
+    rtn.x = ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16;
+    rtn.y = ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16;
+    rtn.scale_x = 1;
+    rtn.scale_y = 1;
+    rtn.flip_x = false;
+    rtn.flip_y = false;
     rtn.upper_palette_index = tilevec_page;
     rtn.upper_tilevec_index = tilevec_page;
     rtn.tilemap_buffer_index = tilevec_page as u32 * rtn.calc_area() as u32;
