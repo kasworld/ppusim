@@ -57,7 +57,9 @@ impl TileMap {
     pub fn calc_area(self) -> usize {
         self.wh.0 as usize * self.wh.1 as usize
     }
-
+    pub fn is_enbaled(self) -> bool {
+        self.enable && self.scale.0 != 0 && self.scale.1 != 0
+    }
     pub fn new_random2(
         tilemap_index: usize,
         mut offset: usize,
@@ -100,9 +102,7 @@ impl TileMap {
         rtn
     }
 
-    pub fn new_tiledef_cover(
-        tilevec_page: u8,
-    ) -> Self {
+    pub fn new_tiledef_cover(tilevec_page: u8) -> Self {
         let mut rtn = Self::new_empty();
         rtn.enable = true;
         rtn.wh = (16, 16); // cover full sub tilevec page
@@ -110,7 +110,7 @@ impl TileMap {
             ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16,
             ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16,
         );
-        rtn.scale = (1,1);
+        rtn.scale = (-2, -1);
         rtn.upper_palette_index = tilevec_page;
         rtn.upper_tilevec_index = tilevec_page;
         rtn.tilemap_buffer_index = tilevec_page as u32 * rtn.calc_area() as u32;
@@ -124,15 +124,15 @@ impl TileMap {
         tilemapbuffer: &tilemap_buffer::TileMapBuffer,
         tilevec: &tile_vec::TileVec,
     ) -> tile::PaletteIndex {
-        if !self.enable || self.scale.0 == 0 || self.scale.1 == 0 {
+        if !self.is_enbaled() {
             return 0;
         }
 
         let tm_x = if self.scale.0 > 0 {
             (dst_x - self.pos.0 as usize) / self.scale.0 as usize
         } else {
-            (self.pos.0 as usize + (self.wh.0 as usize) * tile::TILE_WIDTH - dst_x)
-                / (-(self.scale.0 as isize)) as usize
+            let scale = (-(self.scale.0 as isize)) as usize;
+            (self.pos.0 as usize + (self.wh.0 as usize) * scale * tile::TILE_WIDTH - dst_x) / scale
         };
         if tm_x >= (self.wh.0 as usize) * tile::TILE_WIDTH {
             return 0;
@@ -141,8 +141,8 @@ impl TileMap {
         let tm_y = if self.scale.1 > 0 {
             (dst_y - self.pos.1 as usize) / self.scale.1 as usize
         } else {
-            (self.pos.1 as usize + (self.wh.1 as usize) * tile::TILE_HEIGHT - dst_y)
-                / (-(self.scale.1 as isize)) as usize
+            let scale = (-(self.scale.0 as isize)) as usize;
+            (self.pos.1 as usize + (self.wh.1 as usize) * scale * tile::TILE_HEIGHT - dst_y) / scale
         };
         if tm_y >= (self.wh.1 as usize) * tile::TILE_HEIGHT {
             return 0;
