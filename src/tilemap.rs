@@ -16,10 +16,10 @@ pub struct TileMap {
     pub tilemap_buffer_index: u32,
 
     // calculated in is_in_dst
-    px_w: usize,
-    px_h: usize,
-    scaled_w: usize,
-    scaled_h: usize,
+    px_w: isize,
+    px_h: isize,
+    scaled_w: isize,
+    scaled_h: isize,
     end_x: isize,
     end_y: isize,
 }
@@ -54,12 +54,12 @@ impl TileMap {
     }
 
     pub fn is_in_dst(&mut self, dstw: usize, dsth: usize) -> bool {
-        self.px_w = self.wh.0 as usize * tile::TILE_WIDTH;
-        self.px_h = self.wh.1 as usize * tile::TILE_WIDTH;
-        self.scaled_w = self.px_w * (self.scale.0.abs() as usize);
-        self.scaled_h = self.px_h * (self.scale.1.abs() as usize);
-        self.end_x = self.pos.0 as isize + (self.scaled_w as isize);
-        self.end_y = self.pos.1 as isize + (self.scaled_h as isize);
+        self.px_w = self.wh.0 as isize * tile::TILE_WIDTH as isize;
+        self.px_h = self.wh.1 as isize * tile::TILE_WIDTH as isize;
+        self.scaled_w = self.px_w * (self.scale.0.abs() as isize);
+        self.scaled_h = self.px_h * (self.scale.1.abs() as isize);
+        self.end_x = self.pos.0 as isize + self.scaled_w;
+        self.end_y = self.pos.1 as isize + self.scaled_h;
 
         if !self.is_enbaled() {
             return false;
@@ -86,7 +86,7 @@ impl TileMap {
         } else {
             (self.end_x - dst_x) / (self.scale.0.abs() as isize)
         };
-        if tm_px_x < 0 || tm_px_x >= self.px_w as isize {
+        if tm_px_x < 0 || tm_px_x >= self.px_w {
             return 0;
         }
 
@@ -95,7 +95,7 @@ impl TileMap {
         } else {
             (self.end_y - dst_y) / (self.scale.1.abs() as isize)
         };
-        if tm_px_y < 0 ||  tm_px_y >= self.px_h as isize {
+        if tm_px_y < 0 || tm_px_y >= self.px_h {
             return 0;
         }
         tilevec.get_at(
