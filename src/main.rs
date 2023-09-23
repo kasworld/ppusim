@@ -33,9 +33,7 @@ fn main() {
         let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
         (tile_map_def, dst, tile_map_buffer, tile_def, pal) =
             tile_map_def.render_multi(dst, tile_map_buffer, tile_def, pal);
-        // dst = tile_map_def.render(dst, tile_map_buffer, tile_def, palette);
         print!("render {} ", begin.elapsed().as_secs_f64());
-        _ = dst;
         dst.save("ppu.bmp").unwrap();
         println!("save {}", begin.elapsed().as_secs_f64());
         break;
