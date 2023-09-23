@@ -21,7 +21,7 @@ impl TileMapVec {
     ) -> &'a mut RgbaImage {
         let mut tilemap_list = vec![0usize;0];
         for i in 0..TILE_MAP_VEC_SIZE {
-            if self.0[i].is_in_dst(dst.width() as usize, dst.height() as usize) {
+            if self.0[i].is_in_dst(dst.width() as isize, dst.height() as isize) {
                 tilemap_list.push(i);
             }
         }
