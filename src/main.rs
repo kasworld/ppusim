@@ -30,8 +30,10 @@ fn main() {
 
     loop {
         let begin = Instant::now();
-        let mut dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
-        dst = tile_map_def.render(dst, &tile_map_buffer, &tile_def, &palette);
+        let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
+        dst = tile_map_def.render_multi(
+            dst, tile_map_buffer, tile_def, palette);
+        // dst = tile_map_def.render(dst, &tile_map_buffer, &tile_def, &palette);
         print!("render {} ", begin.elapsed().as_secs_f64());
         _ = dst;
         dst.save("ppu.bmp").unwrap();

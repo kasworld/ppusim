@@ -62,13 +62,14 @@ impl TileMapVec {
         }
         dst
     }
-    pub fn render_multi<'a>(
-        &mut self,
-        dst: &'a mut RgbaImage,
-        tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
-        tilevec: &'a tile_vec::TileVec,
-        pal: &'a palette::Palette,
-    ) -> &'a mut RgbaImage {
+
+    pub fn render_multi(
+        mut self,
+        mut dst: RgbaImage,
+        tilemapbuffer: tilemap_buffer::TileMapBuffer,
+        tilevec: tile_vec::TileVec,
+        pal: palette::Palette,
+    ) -> RgbaImage {
         let mut tilemap_list = vec![0usize; 0];
         let (dstw, dsth) = (dst.width(), dst.height());
         for i in 0..TILE_MAP_VEC_SIZE {
@@ -78,39 +79,45 @@ impl TileMapVec {
         }
         println!("drawable tilemap {}", tilemap_list.len());
 
-        // let worker_count = get_thread_count();
-        // let (tx, rx) = mpsc::channel();
-        // let mut handles = Vec::new();
-        // let tm_vec = Arc::new(self.0.clone());
-        // let tm_list = Arc::new(tilemap_list);
-        // for wid in 0..worker_count {
-        //     let tx1 = tx.clone();
-        //     let tm_vec = tm_vec.clone();
-        //     let tm_list = tm_list.clone();
-        //     let h = thread::spawn(move || {
-        //         Self::worker(
-        //             &tm_vec,
-        //             wid as u32,
-        //             worker_count,
-        //             &tm_list,
-        //             tilevec,
-        //             tilemapbuffer,
-        //             pal,
-        //             dstw,
-        //             dsth,
-        //             tx1,
-        //         )
-        //     });
-        //     handles.push(h);
-        // }
-        // drop(tx);
-        // for r in rx {
-        //     let (x, y, px) = r;
-        //     dst.put_pixel(x, y, px);
-        // }
-        // for h in handles {
-        //     h.join().unwrap()
-        // }
+        let worker_count = get_thread_count();
+        let (tx, rx) = mpsc::channel();
+        let mut handles = Vec::new();
+        let tm_vec = Arc::new(self.0.clone());
+        let tm_list = Arc::new(tilemap_list);
+        let tl_vec = Arc::new(tilevec);
+        let tl_m_buf = Arc::new(tilemapbuffer);
+        let pal = Arc::new(pal);
+        for wid in 0..worker_count {
+            let tx1 = tx.clone();
+            let tm_vec = tm_vec.clone();
+            let tm_list = tm_list.clone();
+            let tl_vec = tl_vec.clone();
+            let tl_m_buf = tl_m_buf.clone();
+            let pal = pal.clone();
+            let h = thread::spawn(move || {
+                Self::worker(
+                    &tm_vec,
+                    wid as u32,
+                    worker_count,
+                    &tm_list,
+                    &tl_vec,
+                    &tl_m_buf,
+                    &pal,
+                    dstw,
+                    dsth,
+                    tx1,
+                )
+            });
+            handles.push(h);
+        }
+        drop(tx);
+        for r in rx {
+            let (x, y, px) = r;
+            dst.put_pixel(x, y, px);
+        }
+        for h in handles {
+            h.join().unwrap()
+        }
         dst
     }
 
