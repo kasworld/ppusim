@@ -1,7 +1,10 @@
 use image;
 use rand::Rng;
-use std::ops::{BitAnd, Shl};
-use std::time::Instant;
+use std::{
+    env,
+    ops::{BitAnd, Shl},
+    time::Instant,
+};
 
 use ppusim::{
     palette::{self, Palette},
@@ -16,6 +19,31 @@ const DSTW: usize = 1920;
 const DSTH: usize = 1080;
 
 fn main() {
+    let mut args = env::args();
+    let prgname = args.next().unwrap();
+
+    let mut tile_map_def = new_tiledef_cover_tilemap_vec();
+    let mut render_loop = false;
+    for arg in args {
+        match arg.trim() {
+            "tilemap_random" => {
+                tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
+            }
+            "tilemap_cover" => {
+                tile_map_def = new_tiledef_cover_tilemap_vec();
+            }
+            "loop" => {
+                render_loop = true;
+            }
+            "noloop" => {
+                render_loop = false;
+            }
+            _ => {
+                help(&prgname);
+            }
+        }
+    }
+
     let mut pal = new_rainbow_palette();
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
@@ -25,9 +53,6 @@ fn main() {
 
     let mut tile_map_buffer = new_seq_tilemapbuffer();
 
-    let mut tile_map_def = new_tiledef_cover_tilemap_vec();
-    // let mut tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
-
     loop {
         let begin = Instant::now();
         let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
@@ -36,8 +61,19 @@ fn main() {
         print!("render {} ", begin.elapsed().as_secs_f64());
         dst.save("ppu.bmp").unwrap();
         println!("save {}", begin.elapsed().as_secs_f64());
-        break;
+        if render_loop == false {
+            break;
+        }
     }
+}
+
+fn help(prgname: &String) {
+    println!("{prgname} PPUSIM Pixel Processing Unit SIMulator");
+    println!("args");
+    println!("  tilemap_random");
+    println!("  tilemap_cover");
+    println!("  loop");
+    println!("  noloop");
 }
 
 pub fn new_random_tilemap_vec(dst_w: usize, dst_h: usize) -> TileMapVec {
