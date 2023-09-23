@@ -13,7 +13,7 @@ impl TileMapVec {
     }
 
     pub fn render<'a>(
-        &self,
+        &mut self,
         dst: &'a mut RgbaImage,
         tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
         tilevec: &'a tile_vec::TileVec,
@@ -32,7 +32,7 @@ impl TileMapVec {
             for x in 0..dst.width() {
                 for tm_index in &tilemap_list{
                     let tm = self.0[*tm_index];
-                    let pal_index = tm.get_at_dst_unchecked(x as usize, y as usize, tilemapbuffer, tilevec);
+                    let pal_index = tm.get_at_dst_unchecked(x as isize, y as isize, tilemapbuffer, tilevec);
                     if pal_index == 0 {
                         continue;
                     }
