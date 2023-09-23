@@ -21,7 +21,7 @@ tilemap : sprite나 background image 를 구성하기 위한 정보를 담고있
 
     pos : 좌표 : (signed 16bit)x2  
     wh : 크기 : (unsigned 8bit)x2 가로 세로 타일 수  
-    scale : 확대/flip x,y : scale < 0 으로 하면 flip 입니다. 
+    scale : 확대/flip x,y : scale < 0 으로 하면 flip 된다.
     upper_palette_index : 사용할 palette page 8bit, 여러 tilemap 이 palette를 공유가능하다.
     upper_tilevec_index : 사용할 tile_vec page 8bit, 여러 tilemap 이 tile_vec page를 공유가능하다.
     tilemap_buffer_index : tilemap buffer 에서 사용할 타일 목록 시작 지점 
@@ -37,4 +37,6 @@ tilemap_buffer : tilemap에서 사용할 tile 번호들의 목록
     ( 같은 tilemap_buffer 공간을 공유 가능, 따라서 tile도 공유가능 ) 
     tilemap의 upper_tilevec_index  와 여기의 tile index 를 사용해서 tile_vec의 위치를 찾는다. 
 
-
+tilesdef.bmp 는 
+https://opengameart.org/content/dungeon-crawl-32x32-tiles
+에서 가져온 것 이다. 

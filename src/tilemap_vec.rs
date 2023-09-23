@@ -25,6 +25,7 @@ impl TileMapVec {
                 tilemap_list.push(i);
             }
         }
+        println!("enabled tilemap {}", tilemap_list.len());
             
         let mut max_tilemap_num_rendered = 0;
         for y in 0..dst.height() {
