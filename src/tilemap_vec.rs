@@ -21,11 +21,11 @@ impl TileMapVec {
     ) -> &'a mut RgbaImage {
         let mut tilemap_list = vec![0usize;0];
         for i in 0..TILE_MAP_VEC_SIZE {
-            if self.0[i].is_enbaled() {
+            if self.0[i].is_in_dst(dst.width() as usize, dst.height() as usize) {
                 tilemap_list.push(i);
             }
         }
-        println!("enabled tilemap {}", tilemap_list.len());
+        println!("drawable tilemap {}", tilemap_list.len());
             
         let mut max_tilemap_num_rendered = 0;
         for y in 0..dst.height() {

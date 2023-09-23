@@ -22,8 +22,8 @@ fn main() {
     let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
-    let tile_map_def = new_tiledef_cover_tilemap_vec();
-    // let tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
+    // let tile_map_def = new_tiledef_cover_tilemap_vec();
+    let tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
     let tile_map_buffer = new_seq_tilemapbuffer();
 
     loop {

@@ -36,6 +36,25 @@ impl TileMap {
     pub fn is_enbaled(self) -> bool {
         self.enable && self.scale.0 != 0 && self.scale.1 != 0
     }
+    pub fn is_in_dst(self, w: usize, h: usize) -> bool {
+        if !self.is_enbaled() {
+            return false;
+        }
+        if self.pos.0 as usize >= w || self.pos.1 as usize >= h {
+            return false;
+        }
+        let wh = self.get_wh_with_scale();
+        if self.pos.0 + (wh.0 as i16) < 0 || self.pos.1 + (wh.1 as i16) < 0 {
+            return false;
+        } 
+        return true;
+    }
+    pub fn get_wh_with_scale(self) -> (usize, usize) {
+        (
+            self.wh.0 as usize * tile::TILE_WIDTH * self.scale.0.abs() as usize,
+            self.wh.1 as usize * tile::TILE_HEIGHT * self.scale.1.abs() as usize,
+        )
+    }
 
     // use is_enabled before call
     pub fn get_at_dst_unchecked(
