@@ -100,6 +100,23 @@ impl TileMap {
         rtn
     }
 
+    pub fn new_tiledef_cover(
+        tilevec_page: u8,
+    ) -> Self {
+        let mut rtn = Self::new_empty();
+        rtn.enable = true;
+        rtn.wh = (16, 16); // cover full sub tilevec page
+        rtn.pos = (
+            ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16,
+            ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16,
+        );
+        rtn.scale = (1,1);
+        rtn.upper_palette_index = tilevec_page;
+        rtn.upper_tilevec_index = tilevec_page;
+        rtn.tilemap_buffer_index = tilevec_page as u32 * rtn.calc_area() as u32;
+        rtn
+    }
+
     pub fn get_at_dst(
         self,
         dst_x: usize,

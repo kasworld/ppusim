@@ -28,6 +28,15 @@ impl TileMapVec {
         rtn
     }
 
+    pub fn new_tiledef_cover() -> Self {
+        let mut rtn = Self::new_empty();
+        for i in 0..256 {
+            rtn.0[i] = tilemap::TileMap::new_tiledef_cover(i as u8);
+        }
+        rtn
+    }
+
+
     pub fn render<'a>(
         &self,
         dst: &'a mut RgbaImage,
