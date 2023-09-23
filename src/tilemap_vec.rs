@@ -29,18 +29,16 @@ impl TileMapVec {
         let mut max_tilemap_num_rendered = 0;
         for y in 0..dst.height() {
             for x in 0..dst.width() {
-                let mut i = 0;
                 for tm_index in &tilemap_list{
                     let tm = self.0[*tm_index];
                     let pal_index = tm.get_at_dst_unchecked(x as usize, y as usize, tilemapbuffer, tilevec);
                     if pal_index == 0 {
-                        i += 1;
                         continue;
                     }
                     let px = pal.get_at(tm.upper_palette_index, pal_index);
                     dst.put_pixel(x, y, px);
-                    if max_tilemap_num_rendered < i {
-                        max_tilemap_num_rendered = i;
+                    if max_tilemap_num_rendered < *tm_index {
+                        max_tilemap_num_rendered = *tm_index;
                     }
                     break; // skip rendered pixel
                 }
