@@ -40,11 +40,11 @@ impl TileMap {
         if !self.is_enbaled() {
             return false;
         }
-        if self.pos.0 as usize >= w || self.pos.1 as usize >= h {
+        if self.pos.0 as isize  >= w as isize|| self.pos.1 as isize >= h as isize {
             return false;
         }
         let wh = self.get_wh_with_scale();
-        if self.pos.0 + (wh.0 as i16) < 0 || self.pos.1 + (wh.1 as i16) < 0 {
+        if (self.pos.0 as isize + (wh.0 as isize)) < 0 || (self.pos.1 as isize + (wh.1 as isize)) < 0 {
             return false;
         } 
         return true;
