@@ -19,13 +19,13 @@ impl TileMapVec {
         Self(vec![tilemap::TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
 
-    pub fn render<'a>(
-        &mut self,
-        dst: &'a mut RgbaImage,
-        tilemapbuffer: &'a tilemap_buffer::TileMapBuffer,
-        tilevec: &'a tile_vec::TileVec,
-        pal: &'a palette::Palette,
-    ) -> &'a mut RgbaImage {
+    pub fn render(
+        mut self,
+        mut dst: RgbaImage,
+        tilemapbuffer: tilemap_buffer::TileMapBuffer,
+        tilevec: tile_vec::TileVec,
+        pal: palette::Palette,
+    ) -> RgbaImage {
         let mut tilemap_list = vec![0usize; 0];
         let (dstw, dsth) = (dst.width(), dst.height());
         for i in 0..TILE_MAP_VEC_SIZE {
@@ -41,7 +41,7 @@ impl TileMapVec {
                 for tm_index in &tilemap_list {
                     let tm = self.0[*tm_index];
                     let pal_index =
-                        tm.get_at_dst_unchecked(x as isize, y as isize, tilemapbuffer, tilevec);
+                        tm.get_at_dst_unchecked(x as isize, y as isize, &tilemapbuffer, &tilevec);
                     if pal_index == 0 {
                         continue;
                     }
