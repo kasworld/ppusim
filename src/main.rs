@@ -172,7 +172,7 @@ pub fn new_rainbow_palette() -> Palette {
 pub fn new_random_tilevec() -> TileVec {
     let mut rtn = TileVec::new_empty();
     for i in 0..tile_vec::TILE_VEC_SIZE {
-        rtn.0[i] = tile::new_random();
+        rtn.0[i] = new_random_tile();
     }
     rtn
 }
@@ -190,6 +190,17 @@ pub fn new_seq_tilemapbuffer() -> TileMapBuffer {
     let mut rtn = TileMapBuffer::new_empty();
     for i in 0..tilemap_buffer::TILE_MAP_BUFFER_SIZE {
         rtn.0[i] = (i % 256) as tilemap_buffer::TileVecIndex;
+    }
+    rtn
+}
+
+pub fn new_random_tile() -> tile::Tile {
+    let mut rtn = tile::new_empty();
+    let mut rng = rand::thread_rng();
+    for y in 0..tile::TILE_HEIGHT {
+        for x in 0..tile::TILE_WIDTH {
+            rtn[y][x] = rng.gen::<tile::PaletteIndex>();
+        }
     }
     rtn
 }
