@@ -9,7 +9,7 @@ pub const LOWER_PALETTE_SIZE: usize = 256;
 
 pub const PALETTE_SIZE: usize = UPPER_PALETTE_SIZE * LOWER_PALETTE_SIZE;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Palette(pub Vec<RGBA>);
 
 impl Palette {

@@ -9,7 +9,7 @@ pub const LOWER_TILE_VEC_SIZE: usize = 256;
 
 pub const TILE_VEC_SIZE: usize = UPPER_TILE_VEC_SIZE * LOWER_TILE_VEC_SIZE;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TileVec(pub Vec<tile::Tile>);
 
 impl TileVec {

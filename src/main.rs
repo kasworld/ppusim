@@ -16,22 +16,23 @@ const DSTW: usize = 1920;
 const DSTH: usize = 1080;
 
 fn main() {
-    let palette = new_rainbow_palette();
+    let mut pal = new_rainbow_palette();
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
 
-    let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
+    let mut tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
-    let tile_map_buffer = new_seq_tilemapbuffer();
+    let mut tile_map_buffer = new_seq_tilemapbuffer();
 
-    let tile_map_def = new_tiledef_cover_tilemap_vec();
-    // let tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
+    let mut tile_map_def = new_tiledef_cover_tilemap_vec();
+    // let mut tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
 
     loop {
         let begin = Instant::now();
         let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
-        dst = tile_map_def.render_multi(dst, tile_map_buffer, tile_def, palette);
+        (tile_map_def, dst, tile_map_buffer, tile_def, pal) =
+            tile_map_def.render_multi(dst, tile_map_buffer, tile_def, pal);
         // dst = tile_map_def.render(dst, tile_map_buffer, tile_def, palette);
         print!("render {} ", begin.elapsed().as_secs_f64());
         _ = dst;

@@ -9,7 +9,7 @@ pub type TileVecIndex = u8;
 
 pub const TILE_MAP_BUFFER_SIZE: usize = 65536 * 11;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TileMapBuffer(pub Vec<TileVecIndex>);
 
 impl TileMapBuffer {
