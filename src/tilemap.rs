@@ -73,8 +73,7 @@ impl TileMap {
         let th = (dst_h / tile::TILE_HEIGHT) as u8;
 
         let wh_range = match tilemap_index {
-            0..=255 => ((16..17), (16..17)), // cover all tile def
-            256..=1023 => ((1..4), (1..4)),
+            0..=1023 => ((1..4), (1..4)),
             1024..=2047 => ((1..16), (1..16)),
             2048..=3071 => ((1..64), (1..64)),
             3072..=4095 => ((1..tw), (1..th)),
@@ -110,7 +109,7 @@ impl TileMap {
             ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16,
             ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16,
         );
-        rtn.scale = (-2, -1);
+        rtn.scale = (1, 1);
         rtn.upper_palette_index = tilevec_page;
         rtn.upper_tilevec_index = tilevec_page;
         rtn.tilemap_buffer_index = tilevec_page as u32 * rtn.calc_area() as u32;
@@ -141,7 +140,7 @@ impl TileMap {
         let tm_y = if self.scale.1 > 0 {
             (dst_y - self.pos.1 as usize) / self.scale.1 as usize
         } else {
-            let scale = (-(self.scale.0 as isize)) as usize;
+            let scale = (-(self.scale.1 as isize)) as usize;
             (self.pos.1 as usize + (self.wh.1 as usize) * scale * tile::TILE_HEIGHT - dst_y) / scale
         };
         if tm_y >= (self.wh.1 as usize) * tile::TILE_HEIGHT {

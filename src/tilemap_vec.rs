@@ -30,10 +30,10 @@ impl TileMapVec {
 
     pub fn new_tiledef_cover() -> Self {
         let mut rtn = Self::new_empty();
-        rtn.0[0] = tilemap::TileMap::new_tiledef_cover(0);
-        // for i in 0..256 {
-        //     rtn.0[i] = tilemap::TileMap::new_tiledef_cover(i as u8);
-        // }
+        // rtn.0[0] = tilemap::TileMap::new_tiledef_cover(0);
+        for i in 0..256 {
+            rtn.0[i] = tilemap::TileMap::new_tiledef_cover(i as u8);
+        }
         rtn
     }
 
