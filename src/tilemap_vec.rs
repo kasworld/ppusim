@@ -46,6 +46,11 @@ impl TileMapVec {
             }
         }
         println!("max rendered tilemap num {}", max_tilemap_num_rendered);
+        for i in 0..tilemap_list.len() {
+            if tilemap_list[i] == max_tilemap_num_rendered {
+                println!("total {} tilemap rendered", i);
+            }
+        }
         dst
     }
 }
