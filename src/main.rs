@@ -22,8 +22,8 @@ fn main() {
     let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
-    let tile_map_def = new_tiledef_cover_tilemap_vec();
-    // let tile_map_def = new_random(DSTW, DSTH);
+    // let tile_map_def = new_tiledef_cover_tilemap_vec();
+    let tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
     let tile_map_buffer = new_seq_tilemapbuffer();
 
     loop {
@@ -51,37 +51,6 @@ pub fn new_random_tilemap_vec(dst_w: usize, dst_h: usize) -> TileMapVec {
         tilemap_buffer::TILE_MAP_BUFFER_SIZE,
         offset as f64 / tilemap_buffer::TILE_MAP_BUFFER_SIZE as f64
     );
-    rtn
-}
-
-pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
-    let mut rtn = TileMapVec::new_empty();
-    // rtn.0[0] = new_tiledef_cover_tilemap(16 + 1);
-    for i in 0..256 {
-        rtn.0[i] = new_tiledef_cover_tilemap(i as u8);
-    }
-    rtn
-}
-
-pub fn new_random_tilemap(dst_w: usize, dst_h: usize) -> TileMap {
-    let mut rng = rand::thread_rng();
-    let mut rtn = TileMap::new_empty();
-    rtn.enable = true;
-    let tw = (dst_w / tile::TILE_WIDTH) as u8;
-    let th = (dst_h / tile::TILE_HEIGHT) as u8;
-
-    // rtn.wh = (tw, th);
-    // rtn.pos = (0, 0);
-    rtn.wh = (rng.gen_range(0..tw), rng.gen_range(0..th));
-    rtn.pos = (
-        rng.gen_range(-(dst_w as i16)..dst_w as i16),
-        rng.gen_range(-(dst_h as i16)..dst_h as i16),
-    );
-    rtn.upper_palette_index = rng.gen::<u8>();
-    rtn.upper_tilevec_index = rng.gen::<u8>();
-    rtn.tilemap_buffer_index =
-        rng.gen_range(0..tilemap_buffer::TILE_MAP_BUFFER_SIZE - rtn.calc_area()) as u32;
-
     rtn
 }
 
@@ -126,6 +95,15 @@ pub fn new_random2_tilemap(
     rtn
 }
 
+pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
+    let mut rtn = TileMapVec::new_empty();
+    // rtn.0[0] = new_tiledef_cover_tilemap(16 + 1);
+    for i in 0..256 {
+        rtn.0[i] = new_tiledef_cover_tilemap(i as u8);
+    }
+    rtn
+}
+
 pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
     let mut rtn = TileMap::new_empty();
     rtn.enable = true;
@@ -141,20 +119,6 @@ pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
     rtn
 }
 
-pub fn new_random_palette() -> Palette {
-    let mut rng = rand::thread_rng();
-    let mut rtn = Palette::new_empty();
-    for i in 0..palette::PALETTE_SIZE {
-        rtn.0[i] = image::Rgba([
-            rng.gen::<u8>(),
-            rng.gen::<u8>(),
-            rng.gen::<u8>(),
-            rng.gen::<u8>(),
-        ]);
-    }
-    rtn
-}
-
 // R:5bit, G:6bit, B:5bit
 pub fn new_rainbow_palette() -> Palette {
     let mut rtn = Palette::new_empty();
@@ -165,23 +129,6 @@ pub fn new_rainbow_palette() -> Palette {
             (i >> 11).bitand(0x1f).shl(3) as u8,
             0xff,
         ]);
-    }
-    rtn
-}
-
-pub fn new_random_tilevec() -> TileVec {
-    let mut rtn = TileVec::new_empty();
-    for i in 0..tile_vec::TILE_VEC_SIZE {
-        rtn.0[i] = new_random_tile();
-    }
-    rtn
-}
-
-pub fn new_random_tilemapbuffer() -> TileMapBuffer {
-    let mut rng = rand::thread_rng();
-    let mut rtn = TileMapBuffer::new_empty();
-    for i in 0..tilemap_buffer::TILE_MAP_BUFFER_SIZE {
-        rtn.0[i] = rng.gen::<tilemap_buffer::TileVecIndex>();
     }
     rtn
 }
