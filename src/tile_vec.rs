@@ -21,10 +21,9 @@ impl TileVec {
         &self.0[hi as usize * LOWER_TILE_VEC_SIZE + index]
     }
 
-    pub fn get_at_tlxy(&self, hi: u8, index: usize, x :usize, y:usize) -> tile::PaletteIndex {
+    pub fn get_at_tlxy(&self, hi: u8, index: usize, x: usize, y: usize) -> tile::PaletteIndex {
         self.0[hi as usize * LOWER_TILE_VEC_SIZE + index][y][x]
     }
-
 
     // file must bmp 256 color grayscale
     // size TILE_WIDTH * LOWER_TILE_VEC_SIZE

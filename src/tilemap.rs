@@ -83,7 +83,7 @@ impl TileMap {
         return true;
     }
 
-    // call precalc_to_render, is_in_dst before call
+    // call is_in_dst before call
     pub fn get_at_dst_unchecked(
         self,
         dst_x: isize,
