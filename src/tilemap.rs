@@ -37,17 +37,14 @@ impl TileMap {
         self.enable && self.scale.0 != 0 && self.scale.1 != 0
     }
 
-    pub fn get_at_dst(
+    // use is_enabled before call
+    pub fn get_at_dst_unchecked(
         self,
         dst_x: usize,
         dst_y: usize,
         tilemapbuffer: &tilemap_buffer::TileMapBuffer,
         tilevec: &tile_vec::TileVec,
     ) -> tile::PaletteIndex {
-        if !self.is_enbaled() {
-            return 0;
-        }
-
         let tm_x = if self.scale.0 > 0 {
             (dst_x - self.pos.0 as usize) / self.scale.0 as usize
         } else {

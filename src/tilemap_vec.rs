@@ -19,12 +19,20 @@ impl TileMapVec {
         tilevec: &'a tile_vec::TileVec,
         pal: &'a palette::Palette,
     ) -> &'a mut RgbaImage {
+        let mut tilemap_list = vec![0usize,0];
+        for i in 0..TILE_MAP_VEC_SIZE {
+            if self.0[i].is_enbaled() {
+                tilemap_list.push(i);
+            }
+        }
+            
         let mut max_tilemap_num_rendered = 0;
         for y in 0..dst.height() {
             for x in 0..dst.width() {
                 let mut i = 0;
-                for tm in &self.0 {
-                    let pal_index = tm.get_at_dst(x as usize, y as usize, tilemapbuffer, tilevec);
+                for tm_index in &tilemap_list{
+                    let tm = self.0[*tm_index];
+                    let pal_index = tm.get_at_dst_unchecked(x as usize, y as usize, tilemapbuffer, tilevec);
                     if pal_index == 0 {
                         i += 1;
                         continue;

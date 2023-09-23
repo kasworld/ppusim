@@ -56,10 +56,10 @@ pub fn new_random_tilemap_vec(dst_w: usize, dst_h: usize) -> TileMapVec {
 
 pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
     let mut rtn = TileMapVec::new_empty();
-    rtn.0[0] = new_tiledef_cover_tilemap(16 + 1);
-    // for i in 0..256 {
-    //     rtn.0[i] = tilemap::TileMap::new_tiledef_cover(i as u8);
-    // }
+    // rtn.0[0] = new_tiledef_cover_tilemap(16 + 1);
+    for i in 0..256 {
+        rtn.0[i] = new_tiledef_cover_tilemap(i as u8);
+    }
     rtn
 }
 
