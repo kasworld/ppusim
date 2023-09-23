@@ -40,3 +40,12 @@ tilemap_buffer : tilemap에서 사용할 tile 번호들의 목록
 tilesdef.bmp 는 
 https://opengameart.org/content/dungeon-crawl-32x32-tiles
 에서 가져온 것 이다. 
+
+sample data file
+
+![image](palette.bmp)
+
+![image](tilesdef.bmp)
+
+![image](ppu.bmp)
+
