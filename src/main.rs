@@ -1,5 +1,6 @@
 use image;
 use rand::Rng;
+use std::ops::{BitAnd, Shl};
 use std::time::Instant;
 
 use ppusim::{
@@ -15,7 +16,7 @@ const DSTW: usize = 1920;
 const DSTH: usize = 1080;
 
 fn main() {
-    let palette = Palette::new_rainbow();
+    let palette = new_rainbow_palette();
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
     let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
@@ -23,7 +24,7 @@ fn main() {
 
     let tile_map_def = new_tiledef_cover_tilemap_vec();
     // let tile_map_def = new_random(DSTW, DSTH);
-    let tile_map_buffer = TileMapBuffer::new_seq();
+    let tile_map_buffer = new_seq_tilemapbuffer();
 
     loop {
         let begin = Instant::now();
@@ -137,5 +138,58 @@ pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
     rtn.upper_palette_index = tilevec_page;
     rtn.upper_tilevec_index = tilevec_page;
     rtn.tilemap_buffer_index = tilevec_page as u32 * rtn.calc_area() as u32;
+    rtn
+}
+
+pub fn new_random_palette() -> Palette {
+    let mut rng = rand::thread_rng();
+    let mut rtn = Palette::new_empty();
+    for i in 0..palette::PALETTE_SIZE {
+        rtn.0[i] = image::Rgba([
+            rng.gen::<u8>(),
+            rng.gen::<u8>(),
+            rng.gen::<u8>(),
+            rng.gen::<u8>(),
+        ]);
+    }
+    rtn
+}
+
+// R:5bit, G:6bit, B:5bit
+pub fn new_rainbow_palette() -> Palette {
+    let mut rtn = Palette::new_empty();
+    for i in 0..palette::PALETTE_SIZE {
+        rtn.0[i] = image::Rgba([
+            i.bitand(0x1f).shl(3) as u8,
+            (i >> 5).bitand(0x3f).shl(2) as u8,
+            (i >> 11).bitand(0x1f).shl(3) as u8,
+            0xff,
+        ]);
+    }
+    rtn
+}
+
+pub fn new_random_tilevec() -> TileVec {
+    let mut rtn = TileVec::new_empty();
+    for i in 0..tile_vec::TILE_VEC_SIZE {
+        rtn.0[i] = tile::new_random();
+    }
+    rtn
+}
+
+pub fn new_random_tilemapbuffer() -> TileMapBuffer {
+    let mut rng = rand::thread_rng();
+    let mut rtn = TileMapBuffer::new_empty();
+    for i in 0..tilemap_buffer::TILE_MAP_BUFFER_SIZE {
+        rtn.0[i] = rng.gen::<tilemap_buffer::TileVecIndex>();
+    }
+    rtn
+}
+
+pub fn new_seq_tilemapbuffer() -> TileMapBuffer {
+    let mut rtn = TileMapBuffer::new_empty();
+    for i in 0..tilemap_buffer::TILE_MAP_BUFFER_SIZE {
+        rtn.0[i] = (i % 256) as tilemap_buffer::TileVecIndex;
+    }
     rtn
 }
