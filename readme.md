@@ -19,14 +19,23 @@ tile_vec : tile의 목록,  256 page 의 256 tile
 
 tilemap : sprite나 background image 를 구성하기 위한 정보를 담고있다. 
 
-    pos : 좌표 : (signed 16bit)x2  
-    wh : 크기 : (unsigned 8bit)x2 가로 세로 타일 수  
-    scale : 확대/flip x,y : scale < 0 으로 하면 flip 된다.
+    x,t : 좌표 : (signed 16bit)x2  
+    w,h : 크기 : (unsigned 8bit)x2 가로 세로 타일 수  
+    scale x,y : 확대 x,y 
+    flip x,y : 좌우 상하 반전 
     upper_palette_index : 사용할 palette page 8bit, 여러 tilemap 이 palette를 공유가능하다.
     upper_tilevec_index : 사용할 tile_vec page 8bit, 여러 tilemap 이 tile_vec page를 공유가능하다.
     tilemap_buffer_index : tilemap buffer 에서 사용할 타일 목록 시작 지점 
         크기(wh) 만큼의 tile을 사용한다. 
     enable : on/off
+
+    아래 필드는 속도를 위해 get_at_dst_unchecked 부르기전 is_in_dst 를 통해 계산되는 필드다.
+    px_w: isize, 픽셀 단위 크기 
+    px_h: isize,
+    scaled_w: isize, 스케일을 포함한 크기 
+    scaled_h: isize,
+    end_x: isize, tilemap의 마지막 위치
+    end_y: isize,
 
 tilemap_vec : tilemap의 목록 : 이것을 사용해서 화면을 그린다. 
 
