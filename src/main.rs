@@ -117,20 +117,18 @@ pub fn new_random2_tilemap(
     let mut rng = rand::thread_rng();
     let mut rtn = TileMap::new_empty();
     rtn.enable = true;
-    let tw = (dst_w / tile::TILE_WIDTH) as u8;
-    let th = (dst_h / tile::TILE_HEIGHT) as u8;
 
-    let wh_range = match tilemap_index {
-        0..=1023 => ((1..4), (1..4)),
-        1024..=2047 => ((1..16), (1..16)),
-        2048..=3071 => ((1..64), (1..64)),
-        3072..=4095 => ((1..tw), (1..th)),
+    let range_end = match tilemap_index {
+        0..=1023 => 3,
+        1024..=2047 => 15,
+        2048..=3071 => 63,
+        3072..=4095 => 255,
         _ => {
             panic!("out of range {}", tilemap_index)
         }
     };
-    rtn.w = rng.gen_range(wh_range.0);
-    rtn.h = rng.gen_range(wh_range.1);
+    rtn.w = rng.gen_range(1..=range_end);
+    rtn.h = rng.gen_range(1..=range_end);
     rtn.x = rng.gen_range(-(dst_w as i16)..dst_w as i16);
     rtn.y = rng.gen_range(-(dst_h as i16)..dst_h as i16);
 
