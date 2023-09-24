@@ -47,23 +47,22 @@ fn main() {
         }
     }
 
-    let mut pal = new_rainbow_palette();
+    let pal = new_rainbow_palette();
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
 
-    let mut tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
+    let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
-    let mut tile_map_buffer = new_seq_tilemapbuffer();
+    let tile_map_buffer = new_seq_tilemapbuffer();
 
     if render_loop {
         worker_count *= 2;
     }
     loop {
         let begin = Instant::now();
-        let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
-        (tile_map_def, dst, tile_map_buffer, tile_def, pal) =
-            tile_map_def.render_multi(worker_count, dst, tile_map_buffer, tile_def, pal);
+        let dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
+        let dst = tile_map_def.render_multi(worker_count, dst, &tile_map_buffer, &tile_def, &pal);
         print!("render {} ", begin.elapsed().as_secs_f64());
         dst.save("ppu.bmp").unwrap();
         println!("save {}", begin.elapsed().as_secs_f64());

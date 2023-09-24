@@ -22,14 +22,14 @@ impl TileMapVec {
         Self(vec![TileMap::new_empty(); TILE_MAP_VEC_SIZE])
     }
 
-    pub fn render_multi(
-        mut self,
+    pub fn render_multi<'a>(
+        &'a mut self,
         worker_count: usize,
-        mut dst: RgbaImage,
-        tilemapbuffer: TileMapBuffer,
-        tilevec: TileVec,
-        pal: Palette,
-    ) -> (Self, RgbaImage, TileMapBuffer, TileVec, Palette) {
+        dst: &'a mut RgbaImage,
+        tilemapbuffer: &'a TileMapBuffer,
+        tilevec: &'a TileVec,
+        pal: &'a Palette,
+    ) -> &mut RgbaImage {
         let mut tilemap_list = vec![0usize; 0];
         let (dstw, dsth) = (dst.width(), dst.height());
         for i in 0..TILE_MAP_VEC_SIZE {
@@ -78,7 +78,7 @@ impl TileMapVec {
         for h in handles {
             h.join().unwrap()
         }
-        (self, dst, tilemapbuffer, tilevec, pal)
+        dst
     }
 }
 
