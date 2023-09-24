@@ -54,8 +54,8 @@ impl TileVec {
 
         let mut tile_index = 0;
         for up_y in 0..SQRT_UPPER_TILE_VEC_SIZE {
-            for up_x in 0..SQRT_LOWER_TILE_VEC_SIZE {
-                for dn_y in 0..SQRT_UPPER_TILE_VEC_SIZE {
+            for up_x in 0..SQRT_UPPER_TILE_VEC_SIZE {
+                for dn_y in 0..SQRT_LOWER_TILE_VEC_SIZE {
                     for dn_x in 0..SQRT_LOWER_TILE_VEC_SIZE {
                         for ty in 0..tile::TILE_HEIGHT {
                             for tx in 0..tile::TILE_WIDTH {
@@ -82,17 +82,16 @@ impl TileVec {
             (UPPER_TILE_VEC_SIZE * (tile::TILE_HEIGHT as usize)) as u32,
         );
 
-        let sqrt_lower_tile_vec_size = 16; // sqrt(LOWER_TILE_VEC_SIZE)
         let mut tile_index = 0;
-        for up_y in 0..sqrt_lower_tile_vec_size {
-            for up_x in 0..sqrt_lower_tile_vec_size {
-                for dn_y in 0..sqrt_lower_tile_vec_size {
-                    for dn_x in 0..sqrt_lower_tile_vec_size {
+        for up_y in 0..SQRT_UPPER_TILE_VEC_SIZE {
+            for up_x in 0..SQRT_UPPER_TILE_VEC_SIZE {
+                for dn_y in 0..SQRT_LOWER_TILE_VEC_SIZE {
+                    for dn_x in 0..SQRT_LOWER_TILE_VEC_SIZE {
                         for ty in 0..tile::TILE_HEIGHT {
                             for tx in 0..tile::TILE_WIDTH {
-                                let x = (up_x * sqrt_lower_tile_vec_size + dn_x) * tile::TILE_WIDTH
+                                let x = (up_x * SQRT_LOWER_TILE_VEC_SIZE + dn_x) * tile::TILE_WIDTH
                                     + tx;
-                                let y = (up_y * sqrt_lower_tile_vec_size + dn_y)
+                                let y = (up_y * SQRT_LOWER_TILE_VEC_SIZE + dn_y)
                                     * tile::TILE_HEIGHT
                                     + ty;
 
