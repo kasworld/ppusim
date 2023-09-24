@@ -3,6 +3,7 @@ use rand::Rng;
 use std::{
     env,
     ops::{BitAnd, Shl},
+    thread,
     time::Instant,
 };
 
@@ -24,6 +25,8 @@ fn main() {
 
     let mut tile_map_def = new_tiledef_cover_tilemap_vec();
     let mut render_loop = false;
+    let worker_count = get_thread_count();
+
     for arg in args {
         match arg.trim() {
             "tilemap_random" => {
@@ -57,7 +60,7 @@ fn main() {
         let begin = Instant::now();
         let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
         (tile_map_def, dst, tile_map_buffer, tile_def, pal) =
-            tile_map_def.render_multi(dst, tile_map_buffer, tile_def, pal);
+            tile_map_def.render_multi(worker_count, dst, tile_map_buffer, tile_def, pal);
         print!("render {} ", begin.elapsed().as_secs_f64());
         dst.save("ppu.bmp").unwrap();
         println!("save {}", begin.elapsed().as_secs_f64());
@@ -74,6 +77,12 @@ fn help(prgname: &String) {
     println!("  tilemap_cover");
     println!("  loop");
     println!("  noloop");
+}
+
+pub fn get_thread_count() -> usize {
+    let count = thread::available_parallelism().unwrap().get();
+    assert!(count >= 1_usize);
+    return count;
 }
 
 pub fn new_random_tilemap_vec(dst_w: usize, dst_h: usize) -> TileMapVec {

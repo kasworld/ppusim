@@ -23,6 +23,7 @@ impl TileMapVec {
 
     pub fn render_multi(
         mut self,
+        worker_count: usize,
         mut dst: RgbaImage,
         tilemapbuffer: TileMapBuffer,
         tilevec: TileVec,
@@ -35,9 +36,8 @@ impl TileMapVec {
                 tilemap_list.push(i);
             }
         }
-        println!("drawable tilemap {}", tilemap_list.len());
+        println!("drawable tilemap {} worker {worker_count}", tilemap_list.len());
 
-        let worker_count = get_thread_count();
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
         let tm_vec = Arc::new(self.0.clone());
@@ -107,10 +107,4 @@ fn worker(
             }
         }
     }
-}
-
-pub fn get_thread_count() -> usize {
-    let count = thread::available_parallelism().unwrap().get();
-    assert!(count >= 1_usize);
-    return count;
 }
