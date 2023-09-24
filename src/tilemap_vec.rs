@@ -1,5 +1,6 @@
 use image::RgbaImage;
 use std::{
+    ops::Range,
     sync::{
         mpsc::{self, Sender},
         Arc,
@@ -36,7 +37,10 @@ impl TileMapVec {
                 tilemap_list.push(i);
             }
         }
-        println!("drawable tilemap {} worker {worker_count}", tilemap_list.len());
+        println!(
+            "drawable tilemap {} worker {worker_count}",
+            tilemap_list.len()
+        );
 
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
@@ -45,6 +49,8 @@ impl TileMapVec {
         let tl_vec = Arc::new(tilevec.clone());
         let tl_m_buf = Arc::new(tilemapbuffer.clone());
         let pale = Arc::new(pal.clone());
+        let workrangelen = dsth / worker_count as u32;
+        // let workrem = dsth % worker_count as u32;
         for wid in 0..worker_count {
             let tx1 = tx.clone();
             let tm_vec = tm_vec.clone();
@@ -52,18 +58,14 @@ impl TileMapVec {
             let tl_vec = tl_vec.clone();
             let tl_m_buf = tl_m_buf.clone();
             let pal = pale.clone();
+            let wrange = if wid != (worker_count - 1) {
+                workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
+            } else {
+                workrangelen * wid as u32..dsth
+            };
             let h = thread::spawn(move || {
                 worker(
-                    &tm_vec,
-                    wid as u32,
-                    worker_count,
-                    &tm_list,
-                    &tl_vec,
-                    &tl_m_buf,
-                    &pal,
-                    dstw,
-                    dsth,
-                    tx1,
+                    &tm_vec, wrange, &tm_list, &tl_vec, &tl_m_buf, &pal, dstw, tx1,
                 )
             });
             handles.push(h);
@@ -82,17 +84,15 @@ impl TileMapVec {
 
 fn worker(
     tm_vec: &[TileMap],
-    wid: u32,    // this worker id
-    wnum: usize, // total worker count
+    wrange: Range<u32>,
     tilemap_list: &Vec<usize>,
     tilevec: &TileVec,
     tilemapbuffer: &TileMapBuffer,
     pal: &Palette,
     w: u32,
-    h: u32,
     tx: Sender<(u32, u32, rgba::RGBA)>,
 ) {
-    for y in (wid..h).step_by(wnum) {
+    for y in wrange {
         for x in 0..w {
             for tm_index in tilemap_list {
                 let tm = tm_vec[*tm_index];

@@ -25,7 +25,7 @@ fn main() {
 
     let mut tile_map_def = new_tiledef_cover_tilemap_vec();
     let mut render_loop = false;
-    let worker_count = get_thread_count();
+    let mut worker_count = get_thread_count();
 
     for arg in args {
         match arg.trim() {
@@ -56,6 +56,9 @@ fn main() {
 
     let mut tile_map_buffer = new_seq_tilemapbuffer();
 
+    if render_loop {
+        worker_count *= 2;
+    }
     loop {
         let begin = Instant::now();
         let mut dst = image::RgbaImage::new(DSTW as u32, DSTH as u32);
@@ -65,6 +68,10 @@ fn main() {
         dst.save("ppu.bmp").unwrap();
         println!("save {}", begin.elapsed().as_secs_f64());
         if render_loop == false {
+            break;
+        }
+        worker_count -= 1;
+        if worker_count <= 0 {
             break;
         }
     }
