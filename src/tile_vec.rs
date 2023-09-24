@@ -4,8 +4,10 @@ use crate::tile;
 use image::{self, GenericImageView, GrayImage, Pixel};
 
 pub const UPPER_TILE_VEC_SIZE: usize = 256;
+pub const SQRT_UPPER_TILE_VEC_SIZE: usize = 16; // sqrt(LOWER_TILE_VEC_SIZE)
 
 pub const LOWER_TILE_VEC_SIZE: usize = 256;
+pub const SQRT_LOWER_TILE_VEC_SIZE: usize = 16; // sqrt(LOWER_TILE_VEC_SIZE)
 
 pub const TILE_VEC_SIZE: usize = UPPER_TILE_VEC_SIZE * LOWER_TILE_VEC_SIZE;
 
@@ -45,22 +47,21 @@ impl TileVec {
                 return rtn;
             }
         };
-        let width = tile::TILE_WIDTH as usize * LOWER_TILE_VEC_SIZE as usize;
-        let height = tile::TILE_HEIGHT as usize * UPPER_TILE_VEC_SIZE as usize;
-        assert_eq!(width, img.width() as usize);
-        assert_eq!(height, img.width() as usize);
+        const WIDTH: usize = tile::TILE_WIDTH as usize * LOWER_TILE_VEC_SIZE as usize;
+        const HEIGHT: usize = tile::TILE_HEIGHT as usize * UPPER_TILE_VEC_SIZE as usize;
+        assert_eq!(WIDTH, img.width() as usize);
+        assert_eq!(HEIGHT, img.width() as usize);
 
-        let sqrt_lower_tile_vec_size = 16; // sqrt(LOWER_TILE_VEC_SIZE)
         let mut tile_index = 0;
-        for up_y in 0..sqrt_lower_tile_vec_size {
-            for up_x in 0..sqrt_lower_tile_vec_size {
-                for dn_y in 0..sqrt_lower_tile_vec_size {
-                    for dn_x in 0..sqrt_lower_tile_vec_size {
+        for up_y in 0..SQRT_UPPER_TILE_VEC_SIZE {
+            for up_x in 0..SQRT_LOWER_TILE_VEC_SIZE {
+                for dn_y in 0..SQRT_UPPER_TILE_VEC_SIZE {
+                    for dn_x in 0..SQRT_LOWER_TILE_VEC_SIZE {
                         for ty in 0..tile::TILE_HEIGHT {
                             for tx in 0..tile::TILE_WIDTH {
-                                let x = (up_x * sqrt_lower_tile_vec_size + dn_x) * tile::TILE_WIDTH
+                                let x = (up_x * SQRT_LOWER_TILE_VEC_SIZE + dn_x) * tile::TILE_WIDTH
                                     + tx;
-                                let y = (up_y * sqrt_lower_tile_vec_size + dn_y)
+                                let y = (up_y * SQRT_LOWER_TILE_VEC_SIZE + dn_y)
                                     * tile::TILE_HEIGHT
                                     + ty;
                                 let px = img.get_pixel(x as u32, y as u32).to_luma().0[0];

@@ -147,10 +147,14 @@ pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
 pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
     let mut rtn = TileMap::new_empty();
     rtn.enable = true;
-    rtn.w = 16; // cover full sub tilevec page
-    rtn.h = 16; // cover full sub tilevec page
-    rtn.x = ((tilevec_page % 16) as usize * tile::TILE_WIDTH * 16) as i16;
-    rtn.y = ((tilevec_page / 16) as usize * tile::TILE_HEIGHT * 16) as i16;
+    rtn.w = tile_vec::SQRT_LOWER_TILE_VEC_SIZE as u8; // cover full sub tilevec page
+    rtn.h = tile_vec::SQRT_UPPER_TILE_VEC_SIZE as u8; // cover full sub tilevec page
+    rtn.x = ((tilevec_page as usize % tile_vec::SQRT_LOWER_TILE_VEC_SIZE)
+        * tile::TILE_WIDTH
+        * tile_vec::SQRT_LOWER_TILE_VEC_SIZE) as i16;
+    rtn.y = ((tilevec_page as usize / tile_vec::SQRT_UPPER_TILE_VEC_SIZE)
+        * tile::TILE_HEIGHT
+        * tile_vec::SQRT_UPPER_TILE_VEC_SIZE) as i16;
     rtn.scale_x = 1;
     rtn.scale_y = 1;
     rtn.flip_x = false;
