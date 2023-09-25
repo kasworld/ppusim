@@ -61,8 +61,14 @@ fn main() {
     }
     loop {
         let begin = Instant::now();
-        let dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
-        let dst = tile_map_def.render_multi(worker_count, dst, &tile_map_buffer, &tile_def, &pal);
+        let dst = tile_map_def.render_multi(
+            worker_count,
+            DSTW as u32,
+            DSTH as u32,
+            &tile_map_buffer,
+            &tile_def,
+            &pal,
+        );
         print!(
             "render {}x{} worker {worker_count}, {} sec",
             DSTW,
