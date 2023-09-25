@@ -9,76 +9,77 @@ use std::{
 };
 
 use crate::{
-    palette::{Palette, self}, rgba, tile_vec::TileVec, tilemap::TileMap, tilemap_buffer::TileMapBuffer,
+    palette::{self, Palette},
+    rgba,
+    tile_vec::TileVec,
+    tilemap::TileMap,
+    tilemap_buffer::TileMapBuffer,
 };
 
 pub const TILE_MAP_VEC_SIZE: usize = 4096;
 
-#[derive(Debug)]
-pub struct TileMapVec(pub Vec<TileMap>);
+pub type TileMapVec = Vec<TileMap>;
 
-impl TileMapVec {
-    pub fn new_empty() -> Self {
-        Self(vec![TileMap::new_empty(); TILE_MAP_VEC_SIZE])
-    }
+pub fn new_empty() -> TileMapVec {
+    vec![TileMap::new_empty(); TILE_MAP_VEC_SIZE]
+}
 
-    pub fn render_multi<'a>(
-        &'a mut self,
-        worker_count: usize,
-        dstw: u32,
-        dsth: u32,
-        tilemapbuffer: &'a TileMapBuffer,
-        tilevec: &'a TileVec,
-        pal: &'a Palette,
-    ) -> RgbaImage {
-        let mut dst = image::RgbaImage::new(dstw, dsth);
-        let mut tilemap_render_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
-        for i in 0..TILE_MAP_VEC_SIZE {
-            if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
-                tilemap_render_list.push(self.0[i]);
-            }
+pub fn render_multi<'a>(
+    worker_count: usize,
+    dstw: u32,
+    dsth: u32,
+    tmv :&'a mut TileMapVec,
+    tilemapbuffer: &'a TileMapBuffer,
+    tilevec: &'a TileVec,
+    pal: &'a Palette,
+) -> RgbaImage {
+    let mut dst = image::RgbaImage::new(dstw, dsth);
+    let mut tilemap_render_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
+    for i in 0..TILE_MAP_VEC_SIZE {
+        if tmv[i].is_in_dst(dstw as isize, dsth as isize) {
+            tilemap_render_list.push(tmv[i]);
         }
-        let (tx, rx) = mpsc::channel();
-        let mut handles = Vec::new();
-        let tilemap_render_list2 = Arc::new(tilemap_render_list);
-        let tilevec2 = Arc::new(tilevec.clone());
-        let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
-        let pale2 = Arc::new(pal.clone());
-        let workrangelen = dsth / worker_count as u32;
-        for wid in 0..worker_count {
-            let tx1 = tx.clone();
-            let tilemap_render_list3 = Arc::clone(&tilemap_render_list2);
-            let tilevec3 = Arc::clone(&tilevec2);
-            let tilemap_buffer3 = Arc::clone(&tilemap_buffer2);
-            let pal3 = Arc::clone(&pale2);
-            let wrange = if wid != (worker_count - 1) {
-                workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
-            } else {
-                workrangelen * wid as u32..dsth
-            };
-            let h = thread::spawn(move || {
-                worker(
-                    wrange,
-                    dstw,
-                    tx1,
-                    &tilemap_render_list3,
-                    &tilevec3,
-                    &tilemap_buffer3,
-                    &pal3,
-                )
-            });
-            handles.push(h);
-        }
-        drop(tx);
-        for r in rx {
-            let (x, y, px) = r;
-            dst.put_pixel(x, y, px);
-        }
-        for h in handles {
-            h.join().unwrap()
-        }
-        dst
     }
+    let (tx, rx) = mpsc::channel();
+    let mut handles = Vec::new();
+    let tilemap_render_list2 = Arc::new(tilemap_render_list);
+    let tilevec2 = Arc::new(tilevec.clone());
+    let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
+    let pale2 = Arc::new(pal.clone());
+    let workrangelen = dsth / worker_count as u32;
+    for wid in 0..worker_count {
+        let tx1 = tx.clone();
+        let tilemap_render_list3 = Arc::clone(&tilemap_render_list2);
+        let tilevec3 = Arc::clone(&tilevec2);
+        let tilemap_buffer3 = Arc::clone(&tilemap_buffer2);
+        let pal3 = Arc::clone(&pale2);
+        let wrange = if wid != (worker_count - 1) {
+            workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
+        } else {
+            workrangelen * wid as u32..dsth
+        };
+        let h = thread::spawn(move || {
+            worker(
+                wrange,
+                dstw,
+                tx1,
+                &tilemap_render_list3,
+                &tilevec3,
+                &tilemap_buffer3,
+                &pal3,
+            )
+        });
+        handles.push(h);
+    }
+    drop(tx);
+    for r in rx {
+        let (x, y, px) = r;
+        dst.put_pixel(x, y, px);
+    }
+    for h in handles {
+        h.join().unwrap()
+    }
+    dst
 }
 
 fn worker(

@@ -61,10 +61,11 @@ fn main() {
     }
     loop {
         let begin = Instant::now();
-        let dst = tile_map_def.render_multi(
+        let dst = tilemap_vec::render_multi(
             worker_count,
             DSTW as u32,
             DSTH as u32,
+            &mut tile_map_def,
             &tile_map_buffer,
             &tile_def,
             &pal,
@@ -104,10 +105,10 @@ pub fn get_thread_count() -> usize {
 
 pub fn new_random_tilemap_vec(dst_w: usize, dst_h: usize) -> TileMapVec {
     let mut offset: usize = 0;
-    let mut rtn = TileMapVec::new_empty();
+    let mut rtn = tilemap_vec::new_empty();
     for i in 0..tilemap_vec::TILE_MAP_VEC_SIZE {
-        rtn.0[i] = new_random2_tilemap(i, offset, dst_w, dst_h);
-        offset += rtn.0[i].calc_area();
+        rtn[i] = new_random2_tilemap(i, offset, dst_w, dst_h);
+        offset += rtn[i].calc_area();
     }
     println!(
         "total tile use {} / buf {} = {}",
@@ -160,10 +161,10 @@ pub fn new_random2_tilemap(
 }
 
 pub fn new_tiledef_cover_tilemap_vec() -> TileMapVec {
-    let mut rtn = TileMapVec::new_empty();
+    let mut rtn = tilemap_vec::new_empty();
     // rtn.0[0] = new_tiledef_cover_tilemap(16 + 1);
     for i in 0..256 {
-        rtn.0[i] = new_tiledef_cover_tilemap(i as u8);
+        rtn[i] = new_tiledef_cover_tilemap(i as u8);
     }
     rtn
 }
