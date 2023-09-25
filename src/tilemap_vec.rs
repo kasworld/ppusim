@@ -9,7 +9,7 @@ use std::{
 };
 
 use crate::{
-    palette::Palette, rgba, tile_vec::TileVec, tilemap::TileMap, tilemap_buffer::TileMapBuffer,
+    palette::{Palette, self}, rgba, tile_vec::TileVec, tilemap::TileMap, tilemap_buffer::TileMapBuffer,
 };
 
 pub const TILE_MAP_VEC_SIZE: usize = 4096;
@@ -98,7 +98,7 @@ fn worker(
                 if pal_index == 0 {
                     continue;
                 }
-                let px = pal.get_at(tm.upper_palette_index, pal_index);
+                let px = palette::get_at(pal, tm.upper_palette_index, pal_index);
                 tx.send((x, y, px)).unwrap();
                 break; // skip rendered pixel
             }

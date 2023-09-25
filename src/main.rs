@@ -191,9 +191,9 @@ pub fn new_tiledef_cover_tilemap(tilevec_page: u8) -> TileMap {
 
 // R:5bit, G:6bit, B:5bit
 pub fn new_rainbow_palette() -> Palette {
-    let mut rtn = Palette::new_empty();
+    let mut rtn = palette::new_empty();
     for i in 0..palette::PALETTE_SIZE {
-        rtn.0[i] = image::Rgba([
+        rtn[i] = image::Rgba([
             i.bitand(0x1f).shl(3) as u8,
             (i >> 5).bitand(0x3f).shl(2) as u8,
             (i >> 11).bitand(0x1f).shl(3) as u8,
