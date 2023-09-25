@@ -64,20 +64,22 @@ impl TileMap {
     }
 
     pub fn is_in_dst(&mut self, dstw: isize, dsth: isize) -> bool {
-        self.px_w = self.w as isize * tile::TILE_WIDTH as isize;
-        self.px_h = self.h as isize * tile::TILE_WIDTH as isize;
-        self.scaled_w = self.px_w * (self.scale_x as isize);
-        self.scaled_h = self.px_h * (self.scale_y as isize);
-        self.end_x = self.x as isize + self.scaled_w;
-        self.end_y = self.y as isize + self.scaled_h;
-
         if !self.is_enbaled() {
             return false;
         }
         if self.x as isize >= dstw || self.y as isize >= dsth {
             return false;
         }
-        if self.end_x < 0 || self.end_y < 0 {
+        self.px_w = self.w as isize * tile::TILE_WIDTH as isize;
+        self.scaled_w = self.px_w * (self.scale_x as isize);
+        self.end_x = self.x as isize + self.scaled_w;
+        if self.end_x < 0 {
+            return false;
+        }
+        self.px_h = self.h as isize * tile::TILE_HEIGHT as isize;
+        self.scaled_h = self.px_h * (self.scale_y as isize);
+        self.end_y = self.y as isize + self.scaled_h;
+        if self.end_y < 0 {
             return false;
         }
         return true;
