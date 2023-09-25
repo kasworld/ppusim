@@ -30,18 +30,13 @@ impl TileMapVec {
         tilevec: &'a TileVec,
         pal: &'a Palette,
     ) -> &mut RgbaImage {
-        let mut tilemap_index_list = vec![0usize; 0];
         let (dstw, dsth) = (dst.width(), dst.height());
+        let mut tilemap_index_list = vec![0usize; 0];
         for i in 0..TILE_MAP_VEC_SIZE {
             if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
                 tilemap_index_list.push(i);
             }
         }
-        println!(
-            "drawable tilemap {} worker {worker_count}",
-            tilemap_index_list.len()
-        );
-
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
         let self02 = Arc::new(self.0.clone());
@@ -50,7 +45,6 @@ impl TileMapVec {
         let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
         let pale2 = Arc::new(pal.clone());
         let workrangelen = dsth / worker_count as u32;
-        // let workrem = dsth % worker_count as u32;
         for wid in 0..worker_count {
             let tx1 = tx.clone();
             let self03 = self02.clone();

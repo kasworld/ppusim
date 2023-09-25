@@ -63,9 +63,14 @@ fn main() {
         let begin = Instant::now();
         let dst = &mut image::RgbaImage::new(DSTW as u32, DSTH as u32);
         let dst = tile_map_def.render_multi(worker_count, dst, &tile_map_buffer, &tile_def, &pal);
-        print!("render {} ", begin.elapsed().as_secs_f64());
+        print!(
+            "render {}x{} worker {worker_count}, {} sec",
+            DSTW,
+            DSTH,
+            begin.elapsed().as_secs_f64()
+        );
         dst.save("ppu.bmp").unwrap();
-        println!("save {}", begin.elapsed().as_secs_f64());
+        println!(", save {} sec", begin.elapsed().as_secs_f64());
         if render_loop == false {
             break;
         }
