@@ -31,7 +31,7 @@ impl TileMapVec {
         pal: &'a Palette,
     ) -> &mut RgbaImage {
         let (dstw, dsth) = (dst.width(), dst.height());
-        let tilemap_index_list = &mut vec![0usize; 0];
+        let mut tilemap_index_list = vec![0usize; 0];
         for i in 0..TILE_MAP_VEC_SIZE {
             if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
                 tilemap_index_list.push(i);
@@ -39,19 +39,19 @@ impl TileMapVec {
         }
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
-        let self02 = Arc::new((&self.0).clone());
-        let tilemap_index_list2 = Arc::new(tilemap_index_list.clone());
+        let self02 = Arc::new(self.0.clone());
+        let tilemap_index_list2 = Arc::new(tilemap_index_list);
         let tilevec2 = Arc::new(tilevec.clone());
         let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
         let pale2 = Arc::new(pal.clone());
         let workrangelen = dsth / worker_count as u32;
         for wid in 0..worker_count {
             let tx1 = tx.clone();
-            let self03 = self02.clone();
-            let tilemap_index_list3 = tilemap_index_list2.clone();
-            let tilevec3 = tilevec2.clone();
-            let tilemap_buffer3 = tilemap_buffer2.clone();
-            let pal3 = pale2.clone();
+            let self03 = Arc::clone(&self02);
+            let tilemap_index_list3 = Arc::clone(&tilemap_index_list2);
+            let tilevec3 = Arc::clone(&tilevec2);
+            let tilemap_buffer3 = Arc::clone(&tilemap_buffer2);
+            let pal3 = Arc::clone(&pale2);
             let wrange = if wid != (worker_count - 1) {
                 workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
             } else {
