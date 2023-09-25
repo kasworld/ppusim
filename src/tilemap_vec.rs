@@ -31,7 +31,7 @@ impl TileMapVec {
         pal: &'a Palette,
     ) -> &mut RgbaImage {
         let (dstw, dsth) = (dst.width(), dst.height());
-        let mut tilemap_index_list = vec![0usize; 0];
+        let tilemap_index_list = &mut vec![0usize; 0];
         for i in 0..TILE_MAP_VEC_SIZE {
             if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
                 tilemap_index_list.push(i);
@@ -39,7 +39,7 @@ impl TileMapVec {
         }
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
-        let self02 = Arc::new(self.0.clone());
+        let self02 = Arc::new((&self.0).clone());
         let tilemap_index_list2 = Arc::new(tilemap_index_list.clone());
         let tilevec2 = Arc::new(tilevec.clone());
         let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
