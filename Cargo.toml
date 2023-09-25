@@ -12,3 +12,5 @@ image = "0.24.7"
 [profile.release]
 # codegen-units = 1
 # lto = true
+
+# $env:RUSTFLAGS="-Ctarget-cpu=native"
