@@ -204,9 +204,9 @@ pub fn new_rainbow_palette() -> Palette {
 }
 
 pub fn new_seq_tilemapbuffer() -> TileMapBuffer {
-    let mut rtn = TileMapBuffer::new_empty();
+    let mut rtn = tilemap_buffer::new_empty();
     for i in 0..tilemap_buffer::TILE_MAP_BUFFER_SIZE {
-        rtn.0[i] = (i % 256) as tilemap_buffer::TileVecIndex;
+        rtn[i] = (i % 256) as tilemap_buffer::TileVecIndex;
     }
     rtn
 }

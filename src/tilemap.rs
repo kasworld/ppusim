@@ -110,11 +110,9 @@ impl TileMap {
         }
         tilevec.get_at_tlxy(
             self.upper_tilevec_index,
-            tilemapbuffer.get_at(
-                self.tilemap_buffer_index as usize
-                    + (tm_px_y as usize / tile::TILE_HEIGHT) * (self.w as usize)
-                    + tm_px_x as usize / tile::TILE_WIDTH,
-            ) as usize,
+            tilemapbuffer[self.tilemap_buffer_index as usize
+                + (tm_px_y as usize / tile::TILE_HEIGHT) * (self.w as usize)
+                + tm_px_x as usize / tile::TILE_WIDTH] as usize,
             tm_px_x as usize % tile::TILE_WIDTH,
             tm_px_y as usize % tile::TILE_HEIGHT,
         )

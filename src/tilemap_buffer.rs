@@ -9,37 +9,30 @@ pub type TileVecIndex = u8;
 
 pub const TILE_MAP_BUFFER_SIZE: usize = 65536 * 11;
 
-#[derive(Debug, Clone)]
-pub struct TileMapBuffer(pub Vec<TileVecIndex>);
+pub type TileMapBuffer = Vec<TileVecIndex>;
 
-impl TileMapBuffer {
-    pub fn new_empty() -> Self {
-        Self(vec![0; TILE_MAP_BUFFER_SIZE])
-    }
+pub fn new_empty() -> TileMapBuffer {
+    vec![0; TILE_MAP_BUFFER_SIZE]
+}
 
-    pub fn get_at(&self, index: usize) -> TileVecIndex {
-        self.0[index]
-    }
+pub fn save(tmb :&TileMapBuffer) {
+    let mut f = File::create(get_filename()).unwrap();
+    f.write_all(as_u8_slice(tmb)).unwrap();
+}
 
-    pub fn save(self) {
-        let mut f = File::create(get_filename()).unwrap();
-        f.write_all(as_u8_slice(&self.0)).unwrap();
-    }
+pub fn load( ) ->TileMapBuffer {
+    let mut f = match File::open(get_filename()) {
+        Ok(f) => f,
+        Err(err) => {
+            println!("skip load file {}, {err}", get_filename());
+            return new_empty();
+        }
+    };
+    let mut bytes = Vec::new();
 
-    pub fn load(&mut self) {
-        let mut f = match File::open(get_filename()) {
-            Ok(f) => f,
-            Err(err) => {
-                println!("skip load file {}, {err}", get_filename());
-                return;
-            }
-        };
-        let mut bytes = Vec::new();
+    f.read_to_end(&mut bytes).unwrap();
 
-        f.read_to_end(&mut bytes).unwrap();
-
-        self.0 = from_u8(bytes)
-    }
+    from_u8(bytes)
 }
 
 fn get_filename() -> String {
