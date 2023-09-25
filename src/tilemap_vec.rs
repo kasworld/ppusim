@@ -28,11 +28,11 @@ pub fn render_multi<'a>(
     worker_count: usize,
     dstw: u32,
     dsth: u32,
-    tmv :&'a mut TileMapVec,
-    tilemapbuffer: &'a TileMapBuffer,
-    tilevec: &'a TileVec,
-    pal: &'a Palette,
-) -> RgbaImage {
+    mut tmv: TileMapVec,
+    tilemap_buf: TileMapBuffer,
+    tilevec: TileVec,
+    pal: Palette,
+) -> (RgbaImage, TileMapVec, TileMapBuffer, TileVec, Palette) {
     let mut dst = image::RgbaImage::new(dstw, dsth);
     let mut tilemap_render_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
     for i in 0..TILE_MAP_VEC_SIZE {
@@ -43,16 +43,16 @@ pub fn render_multi<'a>(
     let (tx, rx) = mpsc::channel();
     let mut handles = Vec::new();
     let tilemap_render_list2 = Arc::new(tilemap_render_list);
-    let tilevec2 = Arc::new(tilevec.clone());
-    let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
-    let pale2 = Arc::new(pal.clone());
+    let tilemap_buf2 = Arc::new(tilemap_buf);
+    let tilevec2 = Arc::new(tilevec);
+    let pal2 = Arc::new(pal);
     let workrangelen = dsth / worker_count as u32;
     for wid in 0..worker_count {
         let tx1 = tx.clone();
         let tilemap_render_list3 = Arc::clone(&tilemap_render_list2);
         let tilevec3 = Arc::clone(&tilevec2);
-        let tilemap_buffer3 = Arc::clone(&tilemap_buffer2);
-        let pal3 = Arc::clone(&pale2);
+        let tilemap_buf3 = Arc::clone(&tilemap_buf2);
+        let pal3 = Arc::clone(&pal2);
         let wrange = if wid != (worker_count - 1) {
             workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
         } else {
@@ -65,7 +65,7 @@ pub fn render_multi<'a>(
                 tx1,
                 &tilemap_render_list3,
                 &tilevec3,
-                &tilemap_buffer3,
+                &tilemap_buf3,
                 &pal3,
             )
         });
@@ -79,7 +79,13 @@ pub fn render_multi<'a>(
     for h in handles {
         h.join().unwrap()
     }
-    dst
+    (
+        dst,
+        tmv,
+        Arc::try_unwrap(tilemap_buf2).unwrap(),
+        Arc::try_unwrap(tilevec2).unwrap(),
+        Arc::try_unwrap(pal2).unwrap(),
+    )
 }
 
 fn worker(

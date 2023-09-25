@@ -1,4 +1,6 @@
 use image;
+use image::RgbaImage;
+
 use rand::Rng;
 use std::{
     env,
@@ -47,28 +49,29 @@ fn main() {
         }
     }
 
-    let pal = new_rainbow_palette();
+    let mut pal = new_rainbow_palette();
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
 
-    let tile_def = tile_vec::load_from_file("tilesdef.bmp".to_string());
+    let mut tile_def = tile_vec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
-    let tile_map_buffer = new_seq_tilemapbuffer();
+    let mut tile_map_buffer = new_seq_tilemapbuffer();
 
     if render_loop {
         worker_count *= 2;
     }
+    let mut dst: RgbaImage;
     loop {
         let begin = Instant::now();
-        let dst = tilemap_vec::render_multi(
+        (dst, tile_map_def, tile_map_buffer, tile_def, pal) = tilemap_vec::render_multi(
             worker_count,
             DSTW as u32,
             DSTH as u32,
-            &mut tile_map_def,
-            &tile_map_buffer,
-            &tile_def,
-            &pal,
+            tile_map_def,
+            tile_map_buffer,
+            tile_def,
+            pal,
         );
         print!(
             "render {}x{} worker {worker_count}, {} sec",
