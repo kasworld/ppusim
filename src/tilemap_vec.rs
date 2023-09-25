@@ -30,34 +30,34 @@ impl TileMapVec {
         tilevec: &'a TileVec,
         pal: &'a Palette,
     ) -> &mut RgbaImage {
-        let mut tilemap_list = vec![0usize; 0];
+        let mut tilemap_index_list = vec![0usize; 0];
         let (dstw, dsth) = (dst.width(), dst.height());
         for i in 0..TILE_MAP_VEC_SIZE {
             if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
-                tilemap_list.push(i);
+                tilemap_index_list.push(i);
             }
         }
         println!(
             "drawable tilemap {} worker {worker_count}",
-            tilemap_list.len()
+            tilemap_index_list.len()
         );
 
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
-        let tm_vec = Arc::new(self.0.clone());
-        let tm_list = Arc::new(tilemap_list.clone());
-        let tl_vec = Arc::new(tilevec.clone());
-        let tl_m_buf = Arc::new(tilemapbuffer.clone());
-        let pale = Arc::new(pal.clone());
+        let self02 = Arc::new(self.0.clone());
+        let tilemap_index_list2 = Arc::new(tilemap_index_list.clone());
+        let tilevec2 = Arc::new(tilevec.clone());
+        let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
+        let pale2 = Arc::new(pal.clone());
         let workrangelen = dsth / worker_count as u32;
         // let workrem = dsth % worker_count as u32;
         for wid in 0..worker_count {
             let tx1 = tx.clone();
-            let tm_vec = tm_vec.clone();
-            let tm_list = tm_list.clone();
-            let tl_vec = tl_vec.clone();
-            let tl_m_buf = tl_m_buf.clone();
-            let pal = pale.clone();
+            let self03 = self02.clone();
+            let tilemap_index_list3 = tilemap_index_list2.clone();
+            let tilevec3 = tilevec2.clone();
+            let tilemap_buffer3 = tilemap_buffer2.clone();
+            let pal3 = pale2.clone();
             let wrange = if wid != (worker_count - 1) {
                 workrangelen * wid as u32..workrangelen * (wid as u32 + 1)
             } else {
@@ -65,7 +65,14 @@ impl TileMapVec {
             };
             let h = thread::spawn(move || {
                 worker(
-                    &tm_vec, wrange, &tm_list, &tl_vec, &tl_m_buf, &pal, dstw, tx1,
+                    wrange,
+                    dstw,
+                    tx1,
+                    &self03,
+                    &tilemap_index_list3,
+                    &tilevec3,
+                    &tilemap_buffer3,
+                    &pal3,
                 )
             });
             handles.push(h);
@@ -83,19 +90,19 @@ impl TileMapVec {
 }
 
 fn worker(
-    tm_vec: &[TileMap],
     wrange: Range<u32>,
-    tilemap_list: &Vec<usize>,
+    w: u32,
+    tx: Sender<(u32, u32, rgba::RGBA)>,
+    tilemap_slice: &[TileMap],
+    tilemap_index_list: &Vec<usize>,
     tilevec: &TileVec,
     tilemapbuffer: &TileMapBuffer,
     pal: &Palette,
-    w: u32,
-    tx: Sender<(u32, u32, rgba::RGBA)>,
 ) {
     for y in wrange {
         for x in 0..w {
-            for tm_index in tilemap_list {
-                let tm = tm_vec[*tm_index];
+            for tm_index in tilemap_index_list {
+                let tm = tilemap_slice[*tm_index];
                 let pal_index =
                     tm.get_at_dst_unchecked(x as isize, y as isize, tilemapbuffer, tilevec);
                 if pal_index == 0 {
