@@ -32,24 +32,22 @@ impl TileMapVec {
         pal: &'a Palette,
     ) -> RgbaImage {
         let mut dst = image::RgbaImage::new(dstw, dsth);
-        let mut tilemap_index_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
+        let mut tilemap_render_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
         for i in 0..TILE_MAP_VEC_SIZE {
             if self.0[i].is_in_dst(dstw as isize, dsth as isize) {
-                tilemap_index_list.push(i);
+                tilemap_render_list.push(self.0[i]);
             }
         }
         let (tx, rx) = mpsc::channel();
         let mut handles = Vec::new();
-        let self02 = Arc::new(self.0.clone());
-        let tilemap_index_list2 = Arc::new(tilemap_index_list);
+        let tilemap_render_list2 = Arc::new(tilemap_render_list);
         let tilevec2 = Arc::new(tilevec.clone());
         let tilemap_buffer2 = Arc::new(tilemapbuffer.clone());
         let pale2 = Arc::new(pal.clone());
         let workrangelen = dsth / worker_count as u32;
         for wid in 0..worker_count {
             let tx1 = tx.clone();
-            let self03 = Arc::clone(&self02);
-            let tilemap_index_list3 = Arc::clone(&tilemap_index_list2);
+            let tilemap_render_list3 = Arc::clone(&tilemap_render_list2);
             let tilevec3 = Arc::clone(&tilevec2);
             let tilemap_buffer3 = Arc::clone(&tilemap_buffer2);
             let pal3 = Arc::clone(&pale2);
@@ -63,8 +61,7 @@ impl TileMapVec {
                     wrange,
                     dstw,
                     tx1,
-                    &self03,
-                    &tilemap_index_list3,
+                    &tilemap_render_list3,
                     &tilevec3,
                     &tilemap_buffer3,
                     &pal3,
@@ -88,16 +85,14 @@ fn worker(
     wrange: Range<u32>,
     w: u32,
     tx: Sender<(u32, u32, rgba::RGBA)>,
-    tilemap_slice: &[TileMap],
-    tilemap_index_list: &Vec<usize>,
+    tilemap_render_list: &Vec<TileMap>,
     tilevec: &TileVec,
     tilemapbuffer: &TileMapBuffer,
     pal: &Palette,
 ) {
     for y in wrange {
         for x in 0..w {
-            for tm_index in tilemap_index_list {
-                let tm = tilemap_slice[*tm_index];
+            for tm in tilemap_render_list {
                 let pal_index =
                     tm.get_at_dst_unchecked(x as isize, y as isize, tilemapbuffer, tilevec);
                 if pal_index == 0 {
