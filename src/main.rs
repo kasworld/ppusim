@@ -10,7 +10,7 @@ use std::{
 use ppusim::{
     palette::{self, Palette},
     tile,
-    tile_vec::{self, TileVec},
+    tile_vec::{self},
     tilemap::TileMap,
     tilemap_buffer::{self, TileMapBuffer},
     tilemap_vec::{self, TileMapVec},
@@ -51,7 +51,7 @@ fn main() {
     // let palette = Palette::load_from_file("palette.bmp".to_owned());
     // palette.save_to_file("palette2.bmp".to_owned());
 
-    let tile_def = TileVec::load_from_file("tilesdef.bmp".to_string());
+    let tile_def = tile_vec::load_from_file("tilesdef.bmp".to_string());
     // tile_def.save_to_file("tilesdef2.bmp".to_string());
 
     let tile_map_buffer = new_seq_tilemapbuffer();

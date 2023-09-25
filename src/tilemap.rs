@@ -108,7 +108,7 @@ impl TileMap {
         if tm_px_y < 0 || tm_px_y >= self.px_h {
             return 0;
         }
-        tilevec.get_at_tlxy(
+        tile_vec::get_at_tlxy(tilevec,
             self.upper_tilevec_index,
             tilemapbuffer[self.tilemap_buffer_index as usize
                 + (tm_px_y as usize / tile::TILE_HEIGHT) * (self.w as usize)
