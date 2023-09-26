@@ -24,15 +24,13 @@ pub fn new_empty() -> TileMapVec {
     vec![TileMap::new_empty(); TILE_MAP_VEC_SIZE]
 }
 
-pub fn make_tilemap_render_list( 
-    tmv: &mut TileMapVec,
-       dstw: u32,
-    dsth: u32,
-) -> TileMapVec{
+// make copy of TileMap on screen in TileMapVec
+pub fn make_tilemap_render_list(tmv: &TileMapVec, dstw: u32, dsth: u32) -> TileMapVec {
     let mut tilemap_render_list = Vec::with_capacity(TILE_MAP_VEC_SIZE);
     for i in 0..TILE_MAP_VEC_SIZE {
-        if tmv[i].is_in_dst(dstw as isize, dsth as isize) {
-            tilemap_render_list.push(tmv[i]);
+        let mut tm = tmv[i];
+        if tm.is_in_dst(dstw as isize, dsth as isize) {
+            tilemap_render_list.push(tm);
         }
     }
     tilemap_render_list
@@ -42,13 +40,12 @@ pub fn render_multi<'a>(
     worker_count: usize,
     dstw: u32,
     dsth: u32,
-    mut tmv: TileMapVec,
+    tilemap_render_list: TileMapVec,
     tilemap_buf: TileMapBuffer,
     tilevec: TileVec,
     pal: Palette,
-) -> (RgbaImage, TileMapVec, TileMapBuffer, TileVec, Palette) {
+) -> (RgbaImage, TileMapBuffer, TileVec, Palette) {
     let mut dst = image::RgbaImage::new(dstw, dsth);
-    let tilemap_render_list = make_tilemap_render_list(&mut tmv, dstw, dsth);
     let (tx, rx) = mpsc::channel();
     let mut handles = Vec::new();
     let tilemap_render_list2 = Arc::new(tilemap_render_list);
@@ -90,7 +87,6 @@ pub fn render_multi<'a>(
     }
     (
         dst,
-        tmv,
         Arc::try_unwrap(tilemap_buf2).unwrap(),
         Arc::try_unwrap(tilevec2).unwrap(),
         Arc::try_unwrap(pal2).unwrap(),

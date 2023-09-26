@@ -25,17 +25,17 @@ fn main() {
     let mut args = env::args();
     let prgname = args.next().unwrap();
 
-    let mut tile_map_def = new_tiledef_cover_tilemap_vec();
+    let mut tile_map_vec_all = new_tiledef_cover_tilemap_vec();
     let mut render_loop = false;
     let mut worker_count = get_thread_count();
 
     for arg in args {
         match arg.trim() {
             "tilemap_random" => {
-                tile_map_def = new_random_tilemap_vec(DSTW, DSTH);
+                tile_map_vec_all = new_random_tilemap_vec(DSTW, DSTH);
             }
             "tilemap_cover" => {
-                tile_map_def = new_tiledef_cover_tilemap_vec();
+                tile_map_vec_all = new_tiledef_cover_tilemap_vec();
             }
             "loop" => {
                 render_loop = true;
@@ -64,11 +64,13 @@ fn main() {
     let mut dst: RgbaImage;
     loop {
         let begin = Instant::now();
-        (dst, tile_map_def, tile_map_buffer, tile_def, pal) = tilemap_vec::render_multi(
+        let tilemap_render_list =
+            tilemap_vec::make_tilemap_render_list(&tile_map_vec_all, DSTW as u32, DSTH as u32);
+        (dst, tile_map_buffer, tile_def, pal) = tilemap_vec::render_multi(
             worker_count,
             DSTW as u32,
             DSTH as u32,
-            tile_map_def,
+            tilemap_render_list,
             tile_map_buffer,
             tile_def,
             pal,
