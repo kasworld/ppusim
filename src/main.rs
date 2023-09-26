@@ -63,9 +63,15 @@ fn main() {
     }
     let mut dst: RgbaImage;
     loop {
+        print!("work thread {worker_count}, screen {}x{}, ", DSTW, DSTH);
         let begin = Instant::now();
         let tilemap_render_list =
             tilemap_vec::make_tilemap_render_list(&tile_map_vec_all, DSTW as u32, DSTH as u32);
+        print!(
+            "tile to render {} of {}, ",
+            tilemap_render_list.len(),
+            tile_map_vec_all.len()
+        );
         (dst, tile_map_buffer, tile_def, pal) = tilemap_vec::render_multi(
             worker_count,
             DSTW as u32,
@@ -75,14 +81,9 @@ fn main() {
             tile_def,
             pal,
         );
-        print!(
-            "render {}x{} worker {worker_count}, {} sec",
-            DSTW,
-            DSTH,
-            begin.elapsed().as_secs_f64()
-        );
+        print!("time {} sec, ", begin.elapsed().as_secs_f64());
         dst.save("ppu.bmp").unwrap();
-        println!(", save {} sec", begin.elapsed().as_secs_f64());
+        println!("save {} sec", begin.elapsed().as_secs_f64());
         if render_loop == false {
             break;
         }
