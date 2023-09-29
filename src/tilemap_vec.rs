@@ -12,7 +12,7 @@ use crate::{
     palette::{self, Palette},
     rgba,
     tile_vec::TileVec,
-    tilemap::TileMap,
+    tilemap::{self, TileMap},
     tilemap_buffer::TileMapBuffer,
 };
 
@@ -116,4 +116,8 @@ fn worker(
             }
         }
     }
+}
+
+pub fn get_size_byte() -> usize {
+    TILE_MAP_VEC_SIZE * tilemap::get_size_byte()
 }

@@ -1,3 +1,4 @@
+use std::mem::size_of;
 use std::{
     fs::File,
     io::{Read, Write},
@@ -15,12 +16,12 @@ pub fn new_empty() -> TileMapBuffer {
     vec![0; TILE_MAP_BUFFER_SIZE]
 }
 
-pub fn save(tmb :&TileMapBuffer) {
+pub fn save(tmb: &TileMapBuffer) {
     let mut f = File::create(get_filename()).unwrap();
     f.write_all(as_u8_slice(tmb)).unwrap();
 }
 
-pub fn load( ) ->TileMapBuffer {
+pub fn load() -> TileMapBuffer {
     let mut f = match File::open(get_filename()) {
         Ok(f) => f,
         Err(err) => {
@@ -66,4 +67,8 @@ fn from_u8(v: Vec<u8>) -> Vec<TileVecIndex> {
             capacity / element_size,
         )
     }
+}
+
+pub fn get_size_byte() -> usize {
+    TILE_MAP_BUFFER_SIZE * size_of::<TileVecIndex>()
 }

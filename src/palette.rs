@@ -46,7 +46,7 @@ pub fn load_from_file(filename: String) -> Palette {
     rtn
 }
 
-pub fn save_to_file(pal :&Palette, filename: String) {
+pub fn save_to_file(pal: &Palette, filename: String) {
     let mut img = RgbaImage::new(LOWER_PALETTE_SIZE as u32, UPPER_PALETTE_SIZE as u32);
     for y in 0..UPPER_PALETTE_SIZE {
         for x in 0..LOWER_PALETTE_SIZE {
@@ -56,6 +56,10 @@ pub fn save_to_file(pal :&Palette, filename: String) {
     img.save(filename).unwrap();
 }
 
-pub fn get_at(pal :&Palette, hi: u8, index: tile::PaletteIndex) -> RGBA {
+pub fn get_at(pal: &Palette, hi: u8, index: tile::PaletteIndex) -> RGBA {
     pal[hi as usize * LOWER_PALETTE_SIZE + index as usize]
+}
+
+pub fn get_size_byte() -> usize {
+    PALETTE_SIZE * rgba::get_size_byte()
 }

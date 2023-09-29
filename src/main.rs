@@ -61,6 +61,17 @@ fn main() {
     if render_loop {
         worker_count *= 2;
     }
+    println!(
+        "mem used total:{}  tilemap_vec:{} palette:{} tile_vec:{} tilemap_buffer:{}",
+        tilemap_vec::get_size_byte()
+            + palette::get_size_byte()
+            + tile_vec::get_size_byte()
+            + tilemap_buffer::get_size_byte(),
+        tilemap_vec::get_size_byte(),
+        palette::get_size_byte(),
+        tile_vec::get_size_byte(),
+        tilemap_buffer::get_size_byte(),
+    );
     let mut dst: RgbaImage;
     loop {
         print!("work thread {worker_count}, screen {}x{}, ", DSTW, DSTH);

@@ -103,3 +103,7 @@ pub fn save_to_file(tv: &TileVec, filename: String) {
     }
     img.save(filename).unwrap();
 }
+
+pub fn get_size_byte() -> usize {
+    TILE_VEC_SIZE * tile::get_size_byte()
+}
