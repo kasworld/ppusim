@@ -62,19 +62,26 @@ fn main() {
         worker_count *= 2;
     }
     println!(
-        "mem used total:{}  tilemap_vec:{} palette:{} tile_vec:{} tilemap_buffer:{}",
-        tilemap_vec::get_size_byte()
+        "mem used total {} KB, tilemap_vec {} KB, palette {} KB, tile_vec {} KB, tilemap_buffer {} KB",
+        (tilemap_vec::get_size_byte()
             + palette::get_size_byte()
             + tile_vec::get_size_byte()
-            + tilemap_buffer::get_size_byte(),
-        tilemap_vec::get_size_byte(),
-        palette::get_size_byte(),
-        tile_vec::get_size_byte(),
-        tilemap_buffer::get_size_byte(),
+            + tilemap_buffer::get_size_byte())
+            / 1024,
+        tilemap_vec::get_size_byte() / 1024,
+        palette::get_size_byte() / 1024,
+        tile_vec::get_size_byte() / 1024,
+        tilemap_buffer::get_size_byte() / 1024,
+    );
+    println!(
+        "render to {}x{}, buffer size {} KB  ",
+        DSTW,
+        DSTH,
+        DSTW * DSTH * 4 / 1024,
     );
     let mut dst: RgbaImage;
     loop {
-        print!("work thread {worker_count}, screen {}x{}, ", DSTW, DSTH);
+        print!("work thread {worker_count}, ");
         let begin = Instant::now();
         let tilemap_render_list =
             tilemap_vec::make_tilemap_render_list(&tile_map_vec_all, DSTW as u32, DSTH as u32);
@@ -94,7 +101,7 @@ fn main() {
         );
         print!("time {} sec, ", begin.elapsed().as_secs_f64());
         dst.save("ppu.bmp").unwrap();
-        println!("save {} sec", begin.elapsed().as_secs_f64());
+        println!("after save {} sec", begin.elapsed().as_secs_f64());
         if render_loop == false {
             break;
         }

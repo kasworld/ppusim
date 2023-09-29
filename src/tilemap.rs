@@ -10,14 +10,14 @@ use crate::{
 #[derive(Clone, Copy, Debug)]
 pub struct TileMap {
     pub enable: bool,
-    pub flip_x: bool,
-    pub flip_y: bool,
     pub x: i16,
     pub y: i16,
     pub w: u8,
     pub h: u8,
     pub scale_x: u8,
     pub scale_y: u8,
+    pub flip_x: bool,
+    pub flip_y: bool,
     pub upper_palette_index: u8,
     pub upper_tilevec_index: u8,
     pub tilemap_buffer_index: u32,
