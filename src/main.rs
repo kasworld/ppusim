@@ -18,10 +18,10 @@ use ppusim::{
     tilemap_vec::{self, TileMapVec},
 };
 
-const DSTW: usize = 1920;
-const DSTH: usize = 1080;
-
 fn main() {
+    let mut dst_w: usize = 1920;
+    let mut dst_h: usize = 1080;
+
     let mut args = env::args();
     let prgname = args.next().unwrap();
 
@@ -32,7 +32,7 @@ fn main() {
     for arg in args {
         match arg.trim() {
             "tilemap_random" => {
-                tile_map_vec_all = new_random_tilemap_vec(DSTW, DSTH);
+                tile_map_vec_all = new_random_tilemap_vec(dst_w, dst_h);
             }
             "tilemap_cover" => {
                 tile_map_vec_all = new_tiledef_cover_tilemap_vec();
@@ -44,7 +44,29 @@ fn main() {
                 render_loop = false;
             }
             _ => {
-                help(&prgname);
+                let wh: Vec<&str> = arg.split("x").collect();
+                if wh.len() != 2 {
+                    help(&prgname);
+                } else {
+                    match wh[0].parse() {
+                        Ok(num) => {
+                            dst_w = num;
+                        }
+                        Err(err) => {
+                            println!("{}", err);
+                            help(&prgname);
+                        }
+                    };
+                    match wh[1].parse() {
+                        Ok(num) => {
+                            dst_h = num;
+                        }
+                        Err(err) => {
+                            println!("{}", err);
+                            help(&prgname);
+                        }
+                    };
+                }
             }
         }
     }
@@ -75,16 +97,16 @@ fn main() {
     );
     println!(
         "render to {}x{}, buffer size {} KB  ",
-        DSTW,
-        DSTH,
-        DSTW * DSTH * 4 / 1024,
+        dst_w,
+        dst_h,
+        dst_w * dst_h * 4 / 1024,
     );
     let mut dst: RgbaImage;
     loop {
         print!("work thread {worker_count}, ");
         let begin = Instant::now();
         let tilemap_render_list =
-            tilemap_vec::make_tilemap_render_list(&tile_map_vec_all, DSTW as u32, DSTH as u32);
+            tilemap_vec::make_tilemap_render_list(&tile_map_vec_all, dst_w as u32, dst_h as u32);
         print!(
             "tile to render {} of {}, ",
             tilemap_render_list.len(),
@@ -92,8 +114,8 @@ fn main() {
         );
         (dst, tile_map_buffer, tile_def, pal) = tilemap_vec::render_multi(
             worker_count,
-            DSTW as u32,
-            DSTH as u32,
+            dst_w as u32,
+            dst_h as u32,
             tilemap_render_list,
             tile_map_buffer,
             tile_def,
@@ -115,10 +137,11 @@ fn main() {
 fn help(prgname: &String) {
     println!("{prgname} PPUSIM Pixel Processing Unit SIMulator");
     println!("args");
-    println!("  tilemap_random");
-    println!("  tilemap_cover");
-    println!("  loop");
+    println!("  tilemap_random : use random tilemap");
+    println!("  tilemap_cover : use cover tilemap");
+    println!("  loop : thread test, loop logic cpu count x 2 to 1");
     println!("  noloop");
+    println!("  [width]x[height] : render size ie. 1920x1080");
 }
 
 pub fn get_thread_count() -> usize {
